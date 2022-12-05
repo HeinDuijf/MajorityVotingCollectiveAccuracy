@@ -16,6 +16,7 @@ class Community:
         mass_competence: float = 0.6,
         probability_preferential_attachment: float = 0.6,
         probability_homophilic_attachment: float = None,
+        edges: list = None,
     ):
         self.number_of_nodes: int = number_of_nodes
         self.number_of_elites: int = number_of_elites
@@ -25,18 +26,24 @@ class Community:
         self.mass_competence: float = mass_competence
         self.probability_preferential_attachment: float = probability_preferential_attachment
         self.probability_homophilic_attachment: float = probability_homophilic_attachment
+        self.edges = edges
 
         self.nodes: list = list(range(number_of_nodes))
         self.nodes_elite: list = self.nodes[: self.number_of_elites]
         self.nodes_mass: list = self.nodes[-self.number_of_mass :]
-        self.network = self.create_network()
 
-        # To keep the computational complexity to a minimum, the following variables
-        # are not initialized
+        # The central method
+        self.network = self.create_network()
 
     def create_network(self):
         """Returns a directed network according to multi-type preferential
-        attachment by amending the Barabási–Albert preferential attachment procedure."""
+        attachment by amending the Barabási–Albert preferential attachment procedure,
+        unless edges are given."""
+        if self.edges is not None:
+            # Create network from edges
+            self.network = self.create_network_from_edges()
+            return self.network
+
         # Create initial network
         if self.probability_homophilic_attachment is None:
             # Create network without homophilic influence
@@ -52,6 +59,12 @@ class Community:
         )
         self.initialize_node_attributes()
         return self.network
+
+    def create_network_from_edges(self):
+        network = nx.DiGraph()
+        network.add_nodes_from(self.nodes)
+        network.add_edges_from(self.edges)
+        return network
 
     def create_initial_network_without_homophilic_attachment(self):
         number_of_edges = self.number_of_nodes * self.degree
@@ -133,30 +146,41 @@ class Community:
             self.network.nodes[mass_node]["type"] = "mass"
             self.network.nodes[mass_node]["competence"] = self.mass_competence
 
-    # TODO: estimated accuracy seems very inaccurate. Perhaps do binomial proportion
-    #  confidence interval?
-    def estimated_community_accuracy(self, number_of_voting_simulations):
-        data = {"mass": 0, "elite": 0}
-        for simulation in range(number_of_voting_simulations):
-            vote_outcome = self.vote()
-            data[vote_outcome] = data[vote_outcome] + 1
-        estimated_accuracy = data["mass"] / (data["mass"] + data["elite"])
-        return estimated_accuracy
+    def total_influence_elites(self):
+        edges_to_elites = [
+            (source, target)
+            for (source, target) in self.network.edges()
+            if target in self.nodes_elite
+        ]
+        return len(edges_to_elites)
 
-    def estimated_community_accuracy_confidence_interval(
+    def total_influence_mass(self):
+        edges_to_mass = [
+            (source, target)
+            for (source, target) in self.network.edges()
+            if target in self.nodes_mass
+        ]
+        return len(edges_to_mass)
+
+    # TODO: 1. Estimated accuracy seems very inaccurate. Perhaps do binomial proportion
+    #  confidence interval? 2. Perhaps move this function outside the class?
+    def estimated_community_accuracy(
         self, number_of_voting_simulations, alpha: float = 0.05
     ):
-        # TODO: check if we want to keep this
-        data = {"mass": 0, "elite": 0}
+        number_of_success: int = 0
         for simulation in range(number_of_voting_simulations):
             vote_outcome = self.vote()
-            data[vote_outcome] = data[vote_outcome] + 1
-        number_of_success = data["mass"]
-        number_of_trials = data["mass"] + data["elite"]
+            if vote_outcome == "mass":
+                number_of_success = number_of_success + 1
+        estimated_accuracy = number_of_success / number_of_voting_simulations
         confidence_interval = proportion_confint(
-            number_of_success, number_of_trials, alpha=alpha
+            number_of_success, number_of_voting_simulations, alpha=alpha
         )
-        return confidence_interval
+        result = {
+            "estimated_accuracy": estimated_accuracy,
+            "precision": max(confidence_interval) - min(confidence_interval),
+        }
+        return result
 
     def vote(self):
         self.update_votes()
