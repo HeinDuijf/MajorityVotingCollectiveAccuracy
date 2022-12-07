@@ -67,31 +67,40 @@ class Community:
         return network
 
     def create_initial_network_without_homophilic_attachment(self):
-        number_of_edges = self.number_of_nodes * self.degree
-        initial_network = nx.gnm_random_graph(
-            self.number_of_nodes, number_of_edges, directed=True
-        )
+        # Initialize network and nodes
+        initial_network = nx.DiGraph()
+        initial_network.add_nodes_from(self.nodes)
+        # Add random edges
+        for node in self.nodes:
+            potential_targets = self.nodes.copy()
+            potential_targets.remove(node)
+            targets = rd.sample(potential_targets, self.degree)
+            edges_from_node = [(node, target) for target in targets]
+            initial_network.add_edges_from(edges_from_node)
         return initial_network
 
     def create_initial_network_with_homophilic_attachment(self):
+        # Initialize network and nodes
         initial_network = nx.DiGraph()
-        initial_network.add_nodes_from(range(self.number_of_nodes))
+        initial_network.add_nodes_from(self.nodes)
+
+        # Homophilic attachment
         nodes_unsaturated = self.nodes.copy()
         while nodes_unsaturated:
             source = rd.choice(nodes_unsaturated)
             if rd.random() < self.probability_homophilic_attachment:
                 if source in self.nodes_elite:
-                    targets = self.nodes_elite.copy()
+                    nodes_same_type = self.nodes_elite.copy()
                 else:
-                    targets = self.nodes_mass.copy()
+                    nodes_same_type = self.nodes_mass.copy()
             else:
                 if source in self.nodes_elite:
-                    targets = self.nodes_mass.copy()
+                    nodes_same_type = self.nodes_mass.copy()
                 else:
-                    targets = self.nodes_elite.copy()
+                    nodes_same_type = self.nodes_elite.copy()
 
             non_targets: set = set(initial_network[source]).union({source})
-            targets = list(set(targets).difference(non_targets))
+            targets = list(set(nodes_same_type).difference(non_targets))
             target = rd.choice(targets)
             initial_network.add_edge(source, target)
 
@@ -101,19 +110,21 @@ class Community:
         return initial_network
 
     def rewire_network_using_preferential_attachment(self, initial_network):
-        # Multi-type preferential attachment
+        # Initialize network and nodes
         network = nx.DiGraph()
-        network.add_nodes_from(range(self.number_of_nodes))
+        network.add_nodes_from(self.nodes)
+
+        # Multi-type preferential attachment
         edges_to_do = list(initial_network.edges()).copy()
         while edges_to_do:
             source, target = rd.choice(edges_to_do)
             # Define possible targets as nodes of the same type as target
             if target in self.nodes_elite:
-                targets = self.nodes_elite.copy()
+                nodes_of_target_type = self.nodes_elite.copy()
             else:
-                targets = self.nodes_mass.copy()
+                nodes_of_target_type = self.nodes_mass.copy()
             non_targets: set = set(network[source]).union({source})
-            targets = list(set(targets).difference(non_targets))
+            targets = list(set(nodes_of_target_type).difference(non_targets))
 
             # Preferential attachment for targets of specified type
             population = list(

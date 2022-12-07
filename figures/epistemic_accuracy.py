@@ -94,7 +94,7 @@ def figure_epistemic_accuracy(scale: int = 3, filename: str = None):
         xlabel=xlabel,
         ylabel=ylabel,
         figsize=line_plot_size,
-        colormap=cmap,
+        colormap=cmap,  # TODO: Fix colormap: one line is invisible.
         # xticks=xticks,
         xlim=xlim,
         ylim=ylim,
