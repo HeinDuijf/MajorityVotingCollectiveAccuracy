@@ -1,11 +1,12 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from scipy.stats import binom
 
-cm = 1 / 2.54  # variable used to convert inches to cm
-line_plot_size = (14 * cm, 10.5 * cm)
-font_style = {"family": "Calibri", "size": 11}
+from generate_figures_scripts.figure_basics import line_plot
+
+# cm = 1 / 2.54  # variable used to convert inches to cm
+# line_plot_size = (14 * cm, 10.5 * cm)
+# font_style = {"family": "Calibri", "size": 11}
 
 
 def epistemic_accuracy(group_size: int, competence: float):
@@ -22,7 +23,8 @@ def epistemic_accuracy(group_size: int, competence: float):
     Returns
     -------
     probability_right: float
-        The probability that majority voting succeeds in selecting the correct alternative"""
+        The probability that majority voting succeeds in selecting the correct
+        alternative"""
     # 0. Initialize variables
     probability_correct: float = 0
 
@@ -62,50 +64,36 @@ def figure_epistemic_accuracy(scale: int = 3, filename: str = None):
         Plot of epistemic accuracy"""
     # 0. Initialize variables
     competence_values = [0.51, 0.55, 0.6, 0.7]
-    competence_max = max(competence_values) + 0.1
-    competence_range = competence_max - min(competence_values)
-
-    # Scale group size values
-    initial_values = np.arange(1, 10, 1, dtype=int)
-    group_size_values = initial_values
+    initial_group_size_values = np.arange(1, 10, 1, dtype=int)
+    group_size_values = initial_group_size_values
     for k in np.arange(1, scale + 1, dtype=int):
-        group_size_values = np.hstack((group_size_values, initial_values * 10 ** k + 1))
+        group_size_values = np.hstack(
+            (group_size_values, initial_group_size_values * 10 ** k + 1)
+        )
 
     # 1. Plots
-    df = pd.DataFrame(index=group_size_values, columns=competence_values)
+    columns = ["competence", "group_size", "accuracy"]
+    df = pd.DataFrame(columns=columns)
     for competence in competence_values:
         for group_size in group_size_values:
-            df.at[group_size, competence] = epistemic_accuracy(
-                group_size=group_size, competence=competence
+            accuracy = epistemic_accuracy(group_size=group_size, competence=competence)
+            data_line = pd.DataFrame(
+                data=[[competence, group_size, accuracy]], columns=columns
             )
+            df = pd.concat([df, data_line], ignore_index=True)
 
-    title = "Epistemic accuracy of majority voting"
-    ylabel = "Epistemic accuracy ($P(n, p_c)$)"
-    xlabel = "Group size ($n$)"
-    ylim = (0.5, 1.0)
-    xlim = (0, 10 ** scale)
-    cmap = plt.get_cmap("Greys")
-    plt.rcParams.update(
-        {"font.family": font_style["family"], "font.size": font_style["size"]}
+    line_plot(
+        dataframe=df,
+        x="group_size",
+        y="accuracy",
+        hue="competence",
+        title="Epistemic accuracy of majority voting",
+        ylabel="Epistemic accuracy",
+        xlabel="Group size",
+        ylim=(0.5, 1.0),
+        xlim=(0, 10 ** scale),
     )
-    df.plot(
-        kind="line",
-        title=title,
-        xlabel=xlabel,
-        ylabel=ylabel,
-        figsize=line_plot_size,
-        colormap=cmap,  # TODO: Fix colormap: one line is invisible.
-        # xticks=xticks,
-        xlim=xlim,
-        ylim=ylim,
-    )
-    legend = [f"Competence {competence}" for competence in competence_values]
-    plt.legend(legend, loc="lower right")
-
-    if filename:
-        plt.savefig(fname=filename, dpi="figure")
-    else:
-        plt.show()
 
 
-figure_epistemic_accuracy(scale=4)
+if __name__ == "__main__":
+    figure_epistemic_accuracy(scale=4)

@@ -67,7 +67,7 @@ class Simulation:
             + "minority_competence, "
             + "majority_competence,"
             + "number_of_minority,"
-            + "proportional_influence_minority,"
+            + "influence_minority_proportion,"
             + "homophily"
         )
         file = open(self.file, "w")
@@ -82,21 +82,21 @@ class Simulation:
         homophily = community.probability_homophilic_attachment
         total_influence_minority = community.total_influence_elites()
         total_influence_majority = community.total_influence_mass()
-        proportional_influence_minority = total_influence_minority / (
+        influence_minority_proportion = total_influence_minority / (
             total_influence_minority + total_influence_majority
         )
         # Run voting simulations to estimate accuracy
         result = community.estimated_community_accuracy(
             self.number_of_voting_simulations
         )
-        collective_accuracy = result["estimated_accuracy"]
+        collective_accuracy = result["accuracy"]
         collective_accuracy_precision = result["precision"]
 
-        # Print results to line in csv file
+        # Print results to line in csv folder
         data_line = (
             f"{collective_accuracy}, {collective_accuracy_precision}, "
             f"{minority_competence}, {majority_competence}, {number_of_minority}, "
-            f"{proportional_influence_minority}, {homophily}"
+            f"{influence_minority_proportion}, {homophily}"
         )
         file = open(self.file, "a")
         file.write(f"\n{data_line}")

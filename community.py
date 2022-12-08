@@ -188,7 +188,7 @@ class Community:
             number_of_success, number_of_voting_simulations, alpha=alpha
         )
         result = {
-            "estimated_accuracy": estimated_accuracy,
+            "accuracy": estimated_accuracy,
             "precision": max(confidence_interval) - min(confidence_interval),
         }
         return result
