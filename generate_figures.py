@@ -1,5 +1,7 @@
 import os
 
+# Todo: these paths are quite long. Maybe rename to:
+# from generate_figures.accuracy_homophily import figure_accuracy_homophilic (phily?)
 from generate_figures_scripts.figure_accuracy_homophily import (
     figure_accuracy_homophilic,
 )

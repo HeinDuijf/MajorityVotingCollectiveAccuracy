@@ -4,6 +4,7 @@ import networkx as nx
 from statsmodels.stats.proportion import proportion_confint
 
 from basic_functions import majority_winner
+from basic_functions import time_this_function
 
 
 class Community:
@@ -19,13 +20,19 @@ class Community:
         edges: list = None,
     ):
         self.number_of_nodes: int = number_of_nodes
+        # Todo: add assertion like:
+        # assert number_of_elites < number_of_nodes
         self.number_of_elites: int = number_of_elites
         self.number_of_mass: int = number_of_nodes - number_of_elites
         self.degree: int = degree
         self.elite_competence: float = elite_competence
         self.mass_competence: float = mass_competence
-        self.probability_preferential_attachment: float = probability_preferential_attachment
-        self.probability_homophilic_attachment: float = probability_homophilic_attachment
+        self.probability_preferential_attachment: float = (
+            probability_preferential_attachment
+        )
+        self.probability_homophilic_attachment: float = (
+            probability_homophilic_attachment
+        )
         self.edges = edges
 
         self.nodes: list = list(range(number_of_nodes))
@@ -37,14 +44,17 @@ class Community:
 
     def create_network(self):
         """Returns a directed network according to multi-type preferential
-        attachment by amending the Barabási–Albert preferential attachment procedure,
+        attachment by amending the Barabási-Albert preferential attachment procedure,
         unless edges are given."""
         if self.edges is not None:
-            # Create network from edges
+            # Create network from edges.
+            # TODO: this comment is obsolete, since the function name is perfect
             self.network = self.create_network_from_edges()
             return self.network
 
-        # Create initial network
+        # Create initial network.
+        # TODO: this comment is also obsolete.
+        # I would rename create_initial to initialize (a bit shorter)
         if self.probability_homophilic_attachment is None:
             # Create network without homophilic influence
             initial_network = (
@@ -53,7 +63,10 @@ class Community:
         else:
             initial_network = self.create_initial_network_with_homophilic_attachment()
 
-        # Preferential rewiring
+        # Preferential rewiring.
+        # TODO: This function name is also very long. I cannot find any other ways
+        # of rewiring networks, so maybe self.rewire_network() would also be sufficient?
+        # In that function you can explain the preferential attachment stuff
         self.network = self.rewire_network_using_preferential_attachment(
             initial_network
         )
@@ -66,12 +79,15 @@ class Community:
         network.add_edges_from(self.edges)
         return network
 
+    @time_this_function
     def create_initial_network_without_homophilic_attachment(self):
         # Initialize network and nodes
         initial_network = nx.DiGraph()
         initial_network.add_nodes_from(self.nodes)
         # Add random edges
         for node in self.nodes:
+            print("node: {node} initializing")
+            # TODO: I found the below script very readable :)
             potential_targets = self.nodes.copy()
             potential_targets.remove(node)
             targets = rd.sample(potential_targets, self.degree)
@@ -79,6 +95,7 @@ class Community:
             initial_network.add_edges_from(edges_from_node)
         return initial_network
 
+    @time_this_function
     def create_initial_network_with_homophilic_attachment(self):
         # Initialize network and nodes
         initial_network = nx.DiGraph()
@@ -86,8 +103,14 @@ class Community:
 
         # Homophilic attachment
         nodes_unsaturated = self.nodes.copy()
+        # TODO: while loops are difficult to read, and sensitive for bugs and errors.
+        # Sometimes they are necessary.
+        # I think (not certain though) that in this case you could also have
+        # created a for-loop over all nodes. That pattern would then also
+        # resemble the for-loop in the other create_network function, which would be nice
         while nodes_unsaturated:
             source = rd.choice(nodes_unsaturated)
+
             if rd.random() < self.probability_homophilic_attachment:
                 if source in self.nodes_elite:
                     nodes_same_type = self.nodes_elite.copy()
@@ -99,6 +122,15 @@ class Community:
                 else:
                     nodes_same_type = self.nodes_elite.copy()
 
+            # TODO: I think the below script is better readable maybe
+            # homophilic = rd.random() > self.probability_homophilic_attachment
+            # source_elite = source in self.nodes_elite
+            # if (homophilic and source_elite) | (not homophilic and not source_elite):
+            #     nodes_same_type = self.nodes_mass
+            # else:
+            #     nodes_same_type = self.nodes_elite
+
+            # TODO: you can immediately see that not_targets is a set
             non_targets: set = set(initial_network[source]).union({source})
             targets = list(set(nodes_same_type).difference(non_targets))
             target = rd.choice(targets)
@@ -109,6 +141,7 @@ class Community:
                 nodes_unsaturated.remove(source)
         return initial_network
 
+    @time_this_function
     def rewire_network_using_preferential_attachment(self, initial_network):
         # Initialize network and nodes
         network = nx.DiGraph()
@@ -116,13 +149,18 @@ class Community:
 
         # Multi-type preferential attachment
         edges_to_do = list(initial_network.edges()).copy()
+        # TODO: I again think the while loop is dangerous, and can be changed to for-loop
         while edges_to_do:
             source, target = rd.choice(edges_to_do)
+            # TODO: I don't think copying is necessary, since the object isn't changed
             # Define possible targets as nodes of the same type as target
             if target in self.nodes_elite:
                 nodes_of_target_type = self.nodes_elite.copy()
             else:
                 nodes_of_target_type = self.nodes_mass.copy()
+
+            # TODO: converting to set is not necessary, since there is no duplication
+            # targets = [node for node in nodes_of_target_type if node not in network[source] and node!=source]
             non_targets: set = set(network[source]).union({source})
             targets = list(set(nodes_of_target_type).difference(non_targets))
 
@@ -166,6 +204,8 @@ class Community:
         return len(edges_to_elites)
 
     def total_influence_mass(self):
+        # TODO: maybe rewrite to this?
+        # return len(self.network.edges()) - self.total_influence_elites()
         edges_to_mass = [
             (source, target)
             for (source, target) in self.network.edges()
@@ -173,12 +213,17 @@ class Community:
         ]
         return len(edges_to_mass)
 
-    # TODO: 1. Estimated accuracy seems very inaccurate. Perhaps do binomial proportion
+    # TODO (hein)
+    # 1. Estimated accuracy seems very inaccurate. Perhaps do binomial proportion
     #  confidence interval? 2. Perhaps move this function outside the class?
     def estimated_community_accuracy(
         self, number_of_voting_simulations, alpha: float = 0.05
     ):
         number_of_success: int = 0
+        # TODO: it is usual to write an unused variable as _.
+        # You could also rewrite:
+        # vote_outcomes = [self.vote() for _ in range(number_of_voting_simulations)]
+        # n_successes = len(outcome for outcome in vote_outcomes if outcome=='mass')
         for simulation in range(number_of_voting_simulations):
             vote_outcome = self.vote()
             if vote_outcome == "mass":
@@ -197,7 +242,7 @@ class Community:
         self.update_votes()
         list_of_votes = [self.network.nodes[node]["vote"] for node in self.nodes]
         majority_winner(list_of_votes)
-        return majority_winner(list_of_votes)
+        return majority_winner(list_of_votes)  # TODO: This is doubled
 
     def update_votes(self):
         self.update_opinions()
@@ -215,6 +260,7 @@ class Community:
                 self.network.nodes[node_elite]["opinion"] = "elite"
             else:
                 self.network.nodes[node_elite]["opinion"] = "mass"
+
         for node_mass in self.nodes_mass:
             if rd.random() < self.mass_competence:
                 self.network.nodes[node_mass]["opinion"] = "mass"
