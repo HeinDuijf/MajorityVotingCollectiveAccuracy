@@ -3,3 +3,4 @@ venv
 .venv
 notes.md
 data/communities
+__pycache__
