@@ -2,8 +2,8 @@ from simulation import Simulation
 
 if __name__ == "__main__":
     number_of_communities = 1
-    number_of_voting_simulations = 10**2
-    number_of_nodes = 10**4
+    number_of_voting_simulations = 100000
+    number_of_nodes = 10**2
 
     # Todo: the function Simulation.run() does not return anything,
     # so the variable simulation isn't anything. It's also not used
