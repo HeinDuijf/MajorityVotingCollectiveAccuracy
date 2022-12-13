@@ -48,6 +48,7 @@ class Community:
         unless edges are given."""
         if self.edges is not None:
             self.network = self.create_network_from_edges()
+            self.initialize_node_attributes()
             return self.network
 
         # Create initial network.
@@ -115,7 +116,6 @@ class Community:
         network = nx.DiGraph()
         network.add_nodes_from(self.nodes)
 
-        # TODO: try in for-loop
         # Multi-type preferential attachment
         edges_to_do = list(initial_network.edges()).copy()
         rd.shuffle(edges_to_do)
@@ -133,11 +133,11 @@ class Community:
 
             if rd.random() < self.probability_preferential_attachment:
                 # Preferential attachment
-                population = list(
+                list_of_tuples = list(
                     network.in_degree(potential_targets)
                 )  # list of tuples of the form (node, in_degree of node)
                 potential_targets_in_degrees = list(
-                    map(lambda tuple_item: tuple_item[1], population)
+                    map(lambda tuple_item: tuple_item[1], list_of_tuples)
                 )
                 if not potential_targets:
                     break
@@ -145,8 +145,9 @@ class Community:
                     # catches the case where all weights are zero
                     target_new = rd.choice(potential_targets)
                 else:
-                    target_new, target_new_in_degree = rd.choices(
-                        population=population, weights=potential_targets_in_degrees
+                    target_new = rd.choices(
+                        population=potential_targets,
+                        weights=potential_targets_in_degrees,
                     )[0]
                     # Note on [0]: rd.choices produces a list
             else:
@@ -154,47 +155,6 @@ class Community:
                 target_new = rd.choice(potential_targets)
             # add edge to new network and remove edge from edges_to_do
             network.add_edge(source, target_new)
-
-        # Multi-type preferential attachment
-        # edges_to_do = list(initial_network.edges()).copy()
-        #
-        # # TODO: I again think the while loop is dangerous, and can be changed to for-loop
-        # while edges_to_do:
-        #     source, target = rd.choice(edges_to_do)
-        #     if target in self.nodes_elite:
-        #         nodes_of_target_type = self.nodes_elite
-        #     else:
-        #         nodes_of_target_type = self.nodes_mass
-        #
-        #     potential_targets = [
-        #         node
-        #         for node in nodes_of_target_type
-        #         if node not in network[source] and node != source
-        #     ]
-        #
-        #     # Preferential attachment for targets of specified type
-        #     if rd.random() < self.probability_preferential_attachment:
-        #         target_new = rd.choice(potential_targets)
-        #     else:
-        #         population = list(
-        #             network.in_degree(potential_targets)
-        #         )  # list of tuples of the form (node, in_degree of node)
-        #         potential_targets_in_degrees = list(
-        #             map(lambda tuple_item: tuple_item[1], population)
-        #         )
-        #         if not potential_targets:
-        #             break
-        #         elif all(w == 0 for w in potential_targets_in_degrees):
-        #             # catches the case where all weights are zero
-        #             target_new = rd.choice(potential_targets)
-        #         else:
-        #             target_new, target_new_in_degree = rd.choices(
-        #                 population=population, weights=potential_targets_in_degrees
-        #             )[0]
-        #             # Note on [0]: rd.choices produces a list
-        #     # add edge to new network and remove edge from edges_to_do
-        #     network.add_edge(source, target_new)
-        #     edges_to_do.remove((source, target))
         return network
 
     def initialize_node_attributes(self):
@@ -257,7 +217,6 @@ class Community:
                 self.network.nodes[node_elite]["opinion"] = "elite"
             else:
                 self.network.nodes[node_elite]["opinion"] = "mass"
-
         for node_mass in self.nodes_mass:
             if rd.random() < self.mass_competence:
                 self.network.nodes[node_mass]["opinion"] = "mass"
