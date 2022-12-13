@@ -1,8 +1,7 @@
 import numpy as np
 import pandas as pd
-from figures.figure_basics import histogram_plot
 
-# from definitions import ROOT_DIR
+from generate_figures.figure_basics import histogram_plot
 
 
 def figure_distribution_influence(
@@ -18,7 +17,6 @@ def figure_distribution_influence(
         Plot of the distribution of proportional influence of the minority and the
         cumulative lineplot
     """
-    # data_file = f"{ROOT_DIR}/{data_file}"
     df = pd.read_csv(data_file)
 
     # Histogram

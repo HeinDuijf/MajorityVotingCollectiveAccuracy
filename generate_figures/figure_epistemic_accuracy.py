@@ -1,11 +1,8 @@
 import numpy as np
 import pandas as pd
-from figures.figure_basics import line_plot
 from scipy.stats import binom
 
-# cm = 1 / 2.54  # variable used to convert inches to cm
-# line_plot_size = (14 * cm, 10.5 * cm)
-# font_style = {"family": "Calibri", "size": 11}
+from generate_figures.figure_basics import line_plot
 
 
 def epistemic_accuracy(group_size: int, competence: float):

@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
-from figures.figure_basics import histogram_plot
+
+from generate_figures.figure_basics import histogram_plot
 
 
 def figure_distribution_accuracy(
@@ -15,7 +16,6 @@ def figure_distribution_accuracy(
     -------
         Plot of the distribution of the collective accuracy and the cumulative
         line plot."""
-    # data_file = f"{data_file}"
     df = pd.read_csv(data_file)
 
     # Histogram
@@ -33,6 +33,4 @@ def figure_distribution_accuracy(
 
 
 if __name__ == "__main__":
-    from definitions import ROOT_DIR
-
     figure_distribution_accuracy()
