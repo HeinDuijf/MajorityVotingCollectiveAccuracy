@@ -8,7 +8,7 @@ if __name__ == "__main__":
 
     Simulation(
         filename="data/clean.csv",
-        folder="data/test",
+        folder="data/communities",
         number_of_communities=number_of_communities,
         number_of_voting_simulations=number_of_voting_simulations,
         number_of_nodes=number_of_nodes,
