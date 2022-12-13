@@ -1,11 +1,14 @@
+import os
 import random as rd
 
 from community import Community
+from save_read_community import read_community_from_file, save_community_to_file
 
 
 class Simulation:
     def __init__(
         self,
+        folder: str,
         filename: str,
         number_of_communities: int,
         number_of_voting_simulations: int,
@@ -18,6 +21,7 @@ class Simulation:
         probability_homophilic_attachment_range=(0.5, 0.75),
     ):
         self.filename = filename
+        self.folder = folder
         self.number_of_communities = number_of_communities
         self.number_of_voting_simulations = number_of_voting_simulations
         self.number_of_nodes = number_of_nodes
@@ -31,18 +35,56 @@ class Simulation:
         )
 
     def run(self):
-        self.write_head_line()
-        for community_number in range(self.number_of_communities):
-            community = self.random_community()
-            self.simulate_and_write_data_line(community)
-            self.report_progress(community_number)
+        os.makedirs(f"{self.folder}", exist_ok=True)
+        self.generate_communities()
+        self.run_folder()
+        self.write_readme()
         print("The simulation is a great success.")
 
-    def generate_communities(self, folder):
-        pass
+    def generate_communities(self):
+        for community_number in range(self.number_of_communities):
+            community = self.random_community()
+            save_community_to_file(
+                f"{self.folder}/communities/{community_number}.txt", community=community
+            )
+            progress_message = "Progress generate_communities"
+            self.report_progress(progress_message, community_number)
+        print(f"The communities are generated in folder {self.folder}.")
 
-    def run_folder(self, folder):
-        pass
+    def run_folder(self):
+        self.write_head_line()
+        for community_number in range(self.number_of_communities):
+            community = read_community_from_file(
+                f"{self.folder}/communities/{community_number}"
+            )
+            self.simulate_and_write_data_line(community)
+            progress_message = "Progress run_folder"
+            self.report_progress(progress_message, community_number)
+        print(
+            f"The simulation involving the communities in folder {self.folder} is a "
+            f"great success."
+        )
+
+    def write_readme(self):
+        information = (
+            f"parameter, value\n"
+            f"filename, {self.filename}\n"
+            f"folder, {self.folder}\n"
+            f"number_of_communities, {self.number_of_communities}\n"
+            f"number_of_voting_simulations, {self.number_of_voting_simulations}\n"
+            f"number_of_nodes, {self.number_of_nodes}\n"
+            f"degree, {self.degree}\n"
+            f"probability_preferential_attachment"
+            f", {self.probability_preferential_attachment}\n"
+            f"elite_competence_range, {self.elite_competence_range}\n"
+            f"mass_competence_range, {self.mass_competence_range}\n"
+            f"number_of_elites_range, {self.number_of_elites_range}\n"
+            f"probability_homophilic_attachment_range, "
+            f"{self.probability_homophilic_attachment_range}"
+        )
+        filename_readme = f"{self.folder}/README.csv"
+        with open(filename_readme, "w") as f:
+            f.write(information)
 
     def random_community(self):
         # TODO: what is the advantage of picking these things randomly,
@@ -110,7 +152,7 @@ class Simulation:
         with open(self.filename, "a") as f:
             f.write(f"\n{data_line}")
 
-    def report_progress(self, community_number):
+    def report_progress(self, message, community_number):
         if community_number % (self.number_of_communities / 100) == 0:
             progress = int((community_number * 100) / self.number_of_communities)
-            print(f"Progress simulation run: {progress}%")
+            print(f"{message}: {progress}%")

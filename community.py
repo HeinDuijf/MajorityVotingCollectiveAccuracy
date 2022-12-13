@@ -91,20 +91,20 @@ class Community:
         # Homophilic attachment
         for node in self.nodes:
             random_list = np.random.random_sample(self.degree)
-            number_same_type_targets = len(
+            number_targets_same_type = len(
                 [x for x in random_list if x < self.probability_homophilic_attachment]
             )
-            number_diff_type_targets = self.degree - number_same_type_targets
+            number_targets_diff_type = self.degree - number_targets_same_type
             if node in self.nodes_elite:
-                nodes_same_type = self.nodes_elite
+                nodes_same_type = self.nodes_elite.copy()
                 nodes_same_type.remove(node)
                 nodes_diff_type = self.nodes_mass
             else:
-                nodes_same_type = self.nodes_mass
+                nodes_same_type = self.nodes_mass.copy()
                 nodes_same_type.remove(node)
                 nodes_diff_type = self.nodes_elite
-            targets_same_type = rd.sample(nodes_same_type, number_same_type_targets)
-            targets_diff_type = rd.sample(nodes_diff_type, number_diff_type_targets)
+            targets_same_type = rd.sample(nodes_same_type, number_targets_same_type)
+            targets_diff_type = rd.sample(nodes_diff_type, number_targets_diff_type)
             targets = targets_same_type + targets_diff_type
             edges_from_source = [(node, target) for target in targets]
             initial_network.add_edges_from(edges_from_source)
@@ -156,45 +156,45 @@ class Community:
             network.add_edge(source, target_new)
 
         # Multi-type preferential attachment
-        edges_to_do = list(initial_network.edges()).copy()
-
-        # TODO: I again think the while loop is dangerous, and can be changed to for-loop
-        while edges_to_do:
-            source, target = rd.choice(edges_to_do)
-            if target in self.nodes_elite:
-                nodes_of_target_type = self.nodes_elite
-            else:
-                nodes_of_target_type = self.nodes_mass
-
-            potential_targets = [
-                node
-                for node in nodes_of_target_type
-                if node not in network[source] and node != source
-            ]
-
-            # Preferential attachment for targets of specified type
-            if rd.random() < self.probability_preferential_attachment:
-                target_new = rd.choice(potential_targets)
-            else:
-                population = list(
-                    network.in_degree(potential_targets)
-                )  # list of tuples of the form (node, in_degree of node)
-                potential_targets_in_degrees = list(
-                    map(lambda tuple_item: tuple_item[1], population)
-                )
-                if not potential_targets:
-                    break
-                elif all(w == 0 for w in potential_targets_in_degrees):
-                    # catches the case where all weights are zero
-                    target_new = rd.choice(potential_targets)
-                else:
-                    target_new, target_new_in_degree = rd.choices(
-                        population=population, weights=potential_targets_in_degrees
-                    )[0]
-                    # Note on [0]: rd.choices produces a list
-            # add edge to new network and remove edge from edges_to_do
-            network.add_edge(source, target_new)
-            edges_to_do.remove((source, target))
+        # edges_to_do = list(initial_network.edges()).copy()
+        #
+        # # TODO: I again think the while loop is dangerous, and can be changed to for-loop
+        # while edges_to_do:
+        #     source, target = rd.choice(edges_to_do)
+        #     if target in self.nodes_elite:
+        #         nodes_of_target_type = self.nodes_elite
+        #     else:
+        #         nodes_of_target_type = self.nodes_mass
+        #
+        #     potential_targets = [
+        #         node
+        #         for node in nodes_of_target_type
+        #         if node not in network[source] and node != source
+        #     ]
+        #
+        #     # Preferential attachment for targets of specified type
+        #     if rd.random() < self.probability_preferential_attachment:
+        #         target_new = rd.choice(potential_targets)
+        #     else:
+        #         population = list(
+        #             network.in_degree(potential_targets)
+        #         )  # list of tuples of the form (node, in_degree of node)
+        #         potential_targets_in_degrees = list(
+        #             map(lambda tuple_item: tuple_item[1], population)
+        #         )
+        #         if not potential_targets:
+        #             break
+        #         elif all(w == 0 for w in potential_targets_in_degrees):
+        #             # catches the case where all weights are zero
+        #             target_new = rd.choice(potential_targets)
+        #         else:
+        #             target_new, target_new_in_degree = rd.choices(
+        #                 population=population, weights=potential_targets_in_degrees
+        #             )[0]
+        #             # Note on [0]: rd.choices produces a list
+        #     # add edge to new network and remove edge from edges_to_do
+        #     network.add_edge(source, target_new)
+        #     edges_to_do.remove((source, target))
         return network
 
     def initialize_node_attributes(self):

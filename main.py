@@ -2,12 +2,13 @@ from simulation import Simulation
 
 if __name__ == "__main__":
     # Variables for the size of the simulation
-    number_of_communities = 1
+    number_of_communities = 10 ** 2
     number_of_voting_simulations = 10 ** 2
-    number_of_nodes = 10 ** 4
+    number_of_nodes = 10 ** 2
 
     Simulation(
         filename="data/clean.csv",
+        folder="data/test",
         number_of_communities=number_of_communities,
         number_of_voting_simulations=number_of_voting_simulations,
         number_of_nodes=number_of_nodes,
