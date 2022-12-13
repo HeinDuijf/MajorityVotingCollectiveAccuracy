@@ -1,16 +1,13 @@
 from simulation import Simulation
 
 if __name__ == "__main__":
+    # Variables for the size of the simulation
     number_of_communities = 1
-    number_of_voting_simulations = 10**2
-    number_of_nodes = 10**4
+    number_of_voting_simulations = 10 ** 2
+    number_of_nodes = 10 ** 4
 
-    # Todo: the function Simulation.run() does not return anything,
-    # so the variable simulation isn't anything. It's also not used
-    # Why do we set some variables above, and some below?
-    # Be careful with the name 'file', it is also a python builtin. --> filename is better
-    simulation = Simulation(
-        file="data/clean.csv",
+    Simulation(
+        filename="data/clean.csv",
         number_of_communities=number_of_communities,
         number_of_voting_simulations=number_of_voting_simulations,
         number_of_nodes=number_of_nodes,

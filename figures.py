@@ -1,17 +1,9 @@
 import os
 
-# Todo: these paths are quite long. Maybe rename to:
-# from generate_figures.accuracy_homophily import figure_accuracy_homophilic (phily?)
-from generate_figures_scripts.figure_accuracy_homophily import (
-    figure_accuracy_homophilic,
-)
-from generate_figures_scripts.figure_distribution_accuracy import (
-    figure_distribution_accuracy,
-)
-from generate_figures_scripts.figure_distribution_influence_proportion import (
-    figure_distribution_influence,
-)
-from generate_figures_scripts.figure_epistemic_accuracy import figure_epistemic_accuracy
+from generate_figures.figure_accuracy_homophily import figure_accuracy_homophilic
+from generate_figures.figure_distribution_accuracy import figure_distribution_accuracy
+from generate_figures.figure_distribution_influence import figure_distribution_influence
+from generate_figures.figure_epistemic_accuracy import figure_epistemic_accuracy
 
 if __name__ == "__main__":
     folder_name = "new_figures"

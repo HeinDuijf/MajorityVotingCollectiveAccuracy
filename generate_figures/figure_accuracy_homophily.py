@@ -1,8 +1,7 @@
 import numpy as np
 import pandas as pd
 from community import Community
-
-from generate_figures_scripts.figure_basics import line_plot
+from figures.figure_basics import line_plot
 
 
 def figure_accuracy_homophilic(

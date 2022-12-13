@@ -1,25 +1,23 @@
 import random as rd
 
 from community import Community
-from basic_functions import time_this_function
 
 
 class Simulation:
     def __init__(
         self,
-        file: str,
+        filename: str,
         number_of_communities: int,
         number_of_voting_simulations: int,
         number_of_nodes: int = 100,
         degree: int = 6,
         probability_preferential_attachment: float = 0.6,
-        elite_competence_range=(0.55, 0.95),
-        mass_competence_range=(0.55, 0.95),
-        number_of_elites_range=(20, 45),
-        probability_homophilic_attachment_range=(0.5, 1.0),
+        elite_competence_range=(0.55, 0.7),
+        mass_competence_range=(0.55, 0.7),
+        number_of_elites_range=(25, 45),
+        probability_homophilic_attachment_range=(0.5, 0.75),
     ):
-        # TODO: rename to filename
-        self.file = file
+        self.filename = filename
         self.number_of_communities = number_of_communities
         self.number_of_voting_simulations = number_of_voting_simulations
         self.number_of_nodes = number_of_nodes
@@ -40,7 +38,12 @@ class Simulation:
             self.report_progress(community_number)
         print("The simulation is a great success.")
 
-    @time_this_function
+    def generate_communities(self, folder):
+        pass
+
+    def run_folder(self, folder):
+        pass
+
     def random_community(self):
         # TODO: what is the advantage of picking these things randomly,
         # compared to looping over a list of options?
@@ -75,17 +78,9 @@ class Simulation:
             + "influence_minority_proportion,"
             + "homophily"
         )
-        # TODO: file is a dangerous name.
-        # Moreover, a more usual way of dealing with opening-closing patterns is using
-        # a context-manager:
-        # with open(self.file, 'w') as f:
-        #    f.write(head_line)
-        # Closing is then unnecessary
-        file = open(self.file, "w")
-        file.write(f"{head_line}")
-        file.close()
+        with open(self.filename, "w") as f:
+            f.write(head_line)
 
-    @time_this_function
     def simulate_and_write_data_line(self, community: Community):
         # TODO: it's a bit cluttery to gather these parameters in a variable just to print them.
         # Instead you can just write: data_line = f"{community.elite_competence}, {community.bla}"
@@ -112,10 +107,8 @@ class Simulation:
             f"{minority_competence}, {majority_competence}, {number_of_minority}, "
             f"{influence_minority_proportion}, {homophily}"
         )
-        # TODO: use context-manager again: with open(..) as f: f.write()
-        file = open(self.file, "a")
-        file.write(f"\n{data_line}")
-        file.close()
+        with open(self.filename, "a") as f:
+            f.write(f"\n{data_line}")
 
     def report_progress(self, community_number):
         if community_number % (self.number_of_communities / 100) == 0:
