@@ -1,11 +1,9 @@
 import random as rd
-import numpy as np
 import networkx as nx
 from statsmodels.stats.proportion import proportion_confint
 
-from basic_functions import majority_winner
-from basic_functions import time_this_function
-from random import random
+import random
+from collections import Counter
 
 
 class Community:
@@ -72,14 +70,11 @@ class Community:
             initial_network
         )
 
-        self.find_neighborhoods()
-
-        return self.network
-
-    def find_neighborhoods(self):
         self.neighborhood = dict()
         for node in self.nodes:
             self.neighborhood[node] = list(self.network[node]) + [node]
+
+        return self.network
 
     def create_network_from_edges(self):
         network = nx.DiGraph()
@@ -222,34 +217,30 @@ class Community:
         }
         return result
 
-    @time_this_function
     def vote(self):
-        self.neighborhood_opinions = np.zeros(len(self.nodes))
-        self.votes = np.zeros(len(self.nodes))
-        self.update_votes()
-        return majority_winner(list(self.votes))
+        elite_influence_counter = self.count_elite_influence()
+        elite_votes = 0
+        for node in elite_influence_counter:
+            if elite_influence_counter[node] > self.degree / 2:
+                elite_votes = elite_votes + 1
+            elif elite_influence_counter[node] == self.degree / 2:
+                elite_votes = elite_votes + random.randint(0, 1)
 
-    @time_this_function
-    def update_votes(self):
-        self.update_opinions()
-        self.votes[self.neighborhood_opinions > self.degree / 2] = 1
-        tie_indices = self.neighborhood_opinions == self.degree / 2
-        self.votes[tie_indices] = np.random.randint(
-            low=0, high=2, size=sum(tie_indices)
-        )
+        if elite_votes > self.number_of_nodes / 2:
+            return 1
+        elif elite_votes == self.number_of_nodes / 2:
+            return random.randint(0, 1)
+        else:
+            return 0
 
-    @time_this_function
-    def update_opinions(self):
+    def count_elite_influence(self):
+        nodes_influenced_by_elite_opinion = []
         for node_elite in self.nodes_elite:
             if rd.random() < self.elite_competence:
-                neighborhood = self.neighborhood[node_elite]
-                self.neighborhood_opinions[neighborhood] = (
-                    self.neighborhood_opinions[neighborhood] + 1
-                )
+                nodes_influenced_by_elite_opinion.extend(self.neighborhood[node_elite])
 
         for node_mass in self.nodes_mass:
             if rd.random() > self.mass_competence:
-                neighborhood = self.neighborhood[node_mass]
-                self.neighborhood_opinions[neighborhood] = (
-                    self.neighborhood_opinions[neighborhood] + 1
-                )
+                nodes_influenced_by_elite_opinion.extend(self.neighborhood[node_mass])
+
+        return Counter(nodes_influenced_by_elite_opinion)
