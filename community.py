@@ -48,7 +48,7 @@ class Community:
         unless edges are given."""
         if self.edges is not None:
             self.network = self.create_network_from_edges()
-            self.initialize_node_attributes()
+            self.initialize_neighborhood()
             return self.network
 
         # Create initial network.
@@ -62,11 +62,13 @@ class Community:
 
         # Preferential rewiring.
         self.network = self.rewire_network(initial_network)
-        self.initialize_node_attributes()
+        self.initialize_neighborhood()
+        return self.network
+
+    def initialize_neighborhood(self):
         self.neighborhood = dict()
         for node in self.nodes:
             self.neighborhood[node] = list(self.network[node]) + [node]
-        return self.network
 
     def create_network_from_edges(self):
         network = nx.DiGraph()
@@ -192,12 +194,13 @@ class Community:
         return result
 
     def vote(self):
-        elite_influence_counter = self.count_elite_influence()
+        elite_opinion_influence_counter = self.count_elite_influence()
+        
         elite_votes = 0
-        for node in elite_influence_counter:
-            if elite_influence_counter[node] > self.degree / 2:
+        for node in elite_opinion_influence_counter:
+            if elite_opinion_influence_counter[node] > self.degree / 2:
                 elite_votes = elite_votes + 1
-            elif elite_influence_counter[node] == self.degree / 2:
+            elif elite_opinion_influence_counter[node] == self.degree / 2:
                 elite_votes = elite_votes + random.randint(0, 1)
 
         if elite_votes > self.number_of_nodes / 2:
