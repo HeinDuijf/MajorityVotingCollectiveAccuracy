@@ -2,6 +2,6 @@
 venv
 .venv
 notes.md
-.vscode
+data/communities
 __pycache__
-data
+.vscode

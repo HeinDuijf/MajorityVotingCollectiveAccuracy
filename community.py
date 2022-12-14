@@ -1,5 +1,6 @@
 import random as rd
 import networkx as nx
+import numpy as np
 from statsmodels.stats.proportion import proportion_confint
 
 import random
@@ -46,14 +47,11 @@ class Community:
         attachment by amending the Barabási-Albert preferential attachment procedure,
         unless edges are given."""
         if self.edges is not None:
-            # Create network from edges.
-            # TODO: this comment is obsolete, since the function name is perfect
             self.network = self.create_network_from_edges()
+            self.initialize_node_attributes()
             return self.network
 
         # Create initial network.
-        # TODO: this comment is also obsolete.
-        # I would rename create_initial to initialize (a bit shorter)
         if self.probability_homophilic_attachment is None:
             # Create network without homophilic influence
             initial_network = (
@@ -63,17 +61,11 @@ class Community:
             initial_network = self.create_initial_network_with_homophilic_attachment()
 
         # Preferential rewiring.
-        # TODO: This function name is also very long. I cannot find any other ways
-        # of rewiring networks, so maybe self.rewire_network() would also be sufficient?
-        # In that function you can explain the preferential attachment stuff
-        self.network = self.rewire_network_using_preferential_attachment(
-            initial_network
-        )
-
+        self.network = self.rewire_network(initial_network)
+        self.initialize_node_attributes()
         self.neighborhood = dict()
         for node in self.nodes:
             self.neighborhood[node] = list(self.network[node]) + [node]
-
         return self.network
 
     def create_network_from_edges(self):
@@ -101,85 +93,71 @@ class Community:
         initial_network.add_nodes_from(self.nodes)
 
         # Homophilic attachment
-        nodes_unsaturated = self.nodes.copy()
-        # TODO: while loops are difficult to read, and sensitive for bugs and errors.
-        # Sometimes they are necessary.
-        # I think (not certain though) that in this case you could also have
-        # created a for-loop over all nodes. That pattern would then also
-        # resemble the for-loop in the other create_network function, which would be nice
-        while nodes_unsaturated:
-            source = rd.choice(nodes_unsaturated)
-
-            if rd.random() < self.probability_homophilic_attachment:
-                if source in self.nodes_elite:
-                    nodes_same_type = self.nodes_elite.copy()
-                else:
-                    nodes_same_type = self.nodes_mass.copy()
+        for node in self.nodes:
+            random_list = np.random.random_sample(self.degree)
+            number_targets_same_type = len(
+                [x for x in random_list if x < self.probability_homophilic_attachment]
+            )
+            number_targets_diff_type = self.degree - number_targets_same_type
+            if node in self.nodes_elite:
+                nodes_same_type = self.nodes_elite.copy()
+                nodes_same_type.remove(node)
+                nodes_diff_type = self.nodes_mass
             else:
-                if source in self.nodes_elite:
-                    nodes_same_type = self.nodes_mass.copy()
-                else:
-                    nodes_same_type = self.nodes_elite.copy()
-
-            # TODO: I think the below script is better readable maybe
-            # homophilic = rd.random() > self.probability_homophilic_attachment
-            # source_elite = source in self.nodes_elite
-            # if (homophilic and source_elite) | (not homophilic and not source_elite):
-            #     nodes_same_type = self.nodes_mass
-            # else:
-            #     nodes_same_type = self.nodes_elite
-
-            # TODO: you can immediately see that not_targets is a set
-            non_targets: set = set(initial_network[source]).union({source})
-            targets = list(set(nodes_same_type).difference(non_targets))
-            target = rd.choice(targets)
-            initial_network.add_edge(source, target)
-
-            # remove node from sources if it is already saturated
-            if initial_network.out_degree(source) == self.degree:
-                nodes_unsaturated.remove(source)
+                nodes_same_type = self.nodes_mass.copy()
+                nodes_same_type.remove(node)
+                nodes_diff_type = self.nodes_elite
+            targets_same_type = rd.sample(nodes_same_type, number_targets_same_type)
+            targets_diff_type = rd.sample(nodes_diff_type, number_targets_diff_type)
+            targets = targets_same_type + targets_diff_type
+            edges_from_source = [(node, target) for target in targets]
+            initial_network.add_edges_from(edges_from_source)
         return initial_network
 
-    def rewire_network_using_preferential_attachment(self, initial_network):
+    def rewire_network(self, initial_network):
         # Initialize network and nodes
         network = nx.DiGraph()
         network.add_nodes_from(self.nodes)
 
         # Multi-type preferential attachment
         edges_to_do = list(initial_network.edges()).copy()
-        # TODO: I again think the while loop is dangerous, and can be changed to for-loop
-        while edges_to_do:
-            source, target = rd.choice(edges_to_do)
+        rd.shuffle(edges_to_do)
+        for (source, target) in edges_to_do:
+            # Define potential targets
             if target in self.nodes_elite:
                 nodes_of_target_type = self.nodes_elite
             else:
                 nodes_of_target_type = self.nodes_mass
+            potential_targets = [
+                node
+                for node in nodes_of_target_type
+                if node not in network[source] and node != source
+            ]
 
-            # TODO: converting to set is not necessary, since there is no duplication
-            non_targets = list(network[source]) + [source]
-            targets = [node for node in nodes_of_target_type if node not in non_targets]
-
-            # Preferential attachment for targets of specified type
-            population = list(
-                network.in_degree(targets)
-            )  # list of tuples of the form (node, in_degree of node)
-            targets_in_degrees = list(map(lambda tuple_item: tuple_item[1], population))
             if rd.random() < self.probability_preferential_attachment:
-                target_new = rd.choice(targets)
-            else:
-                if not targets:
+                # Preferential attachment
+                list_of_tuples = list(
+                    network.in_degree(potential_targets)
+                )  # list of tuples of the form (node, in_degree of node)
+                potential_targets_in_degrees = list(
+                    map(lambda tuple_item: tuple_item[1], list_of_tuples)
+                )
+                if not potential_targets:
                     break
-                elif all(w == 0 for w in targets_in_degrees):
+                elif all(w == 0 for w in potential_targets_in_degrees):
                     # catches the case where all weights are zero
-                    target_new = rd.choice(targets)
+                    target_new = rd.choice(potential_targets)
                 else:
-                    target_new, _ = rd.choices(
-                        population=population, weights=targets_in_degrees
+                    target_new = rd.choices(
+                        population=potential_targets,
+                        weights=potential_targets_in_degrees,
                     )[0]
                     # Note on [0]: rd.choices produces a list
+            else:
+                # Random attachment
+                target_new = rd.choice(potential_targets)
             # add edge to new network and remove edge from edges_to_do
             network.add_edge(source, target_new)
-            edges_to_do.remove((source, target))
         return network
 
     def total_influence_elites(self):
@@ -199,14 +177,10 @@ class Community:
     def estimated_community_accuracy(
         self, number_of_voting_simulations, alpha: float = 0.05
     ):
-        number_of_success: int = 0
-        # You could also rewrite:
-        # vote_outcomes = [self.vote() for _ in range(number_of_voting_simulations)]
-        # n_successes = len(outcome for outcome in vote_outcomes if outcome=='mass')
-        for _ in range(number_of_voting_simulations):
-            vote_outcome = self.vote()
-            if vote_outcome == 0:
-                number_of_success = number_of_success + 1
+        vote_outcomes = [self.vote() for _ in range(number_of_voting_simulations)]
+        number_of_success = len(
+            [outcome for outcome in vote_outcomes if outcome == "mass"]
+        )
         estimated_accuracy = number_of_success / number_of_voting_simulations
         confidence_interval = proportion_confint(
             number_of_success, number_of_voting_simulations, alpha=alpha
