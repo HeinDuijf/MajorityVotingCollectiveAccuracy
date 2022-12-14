@@ -1,10 +1,11 @@
 import random as rd
-
+import numpy as np
 import networkx as nx
 from statsmodels.stats.proportion import proportion_confint
 
 from basic_functions import majority_winner
 from basic_functions import time_this_function
+from random import random
 
 
 class Community:
@@ -71,11 +72,11 @@ class Community:
             initial_network
         )
 
-        self.set_network_attributes()
+        self.find_neighborhoods()
 
         return self.network
 
-    def set_network_attributes(self):
+    def find_neighborhoods(self):
         self.neighborhood = dict()
         for node in self.nodes:
             self.neighborhood[node] = list(self.network[node]) + [node]
@@ -200,7 +201,6 @@ class Community:
     # TODO (hein)
     # 1. Estimated accuracy seems very inaccurate. Perhaps do binomial proportion
     #  confidence interval? 2. Perhaps move this function outside the class?
-    @time_this_function
     def estimated_community_accuracy(
         self, number_of_voting_simulations, alpha: float = 0.05
     ):
@@ -222,31 +222,34 @@ class Community:
         }
         return result
 
+    @time_this_function
     def vote(self):
-        self.opinions = dict()
-        self.votes = dict()
+        self.neighborhood_opinions = np.zeros(len(self.nodes))
+        self.votes = np.zeros(len(self.nodes))
         self.update_votes()
-        return majority_winner(list(self.votes.values()))
+        return majority_winner(list(self.votes))
 
-    # @time_this_function
+    @time_this_function
     def update_votes(self):
         self.update_opinions()
-        for node in self.nodes:
-            neighborhood_opinions = [
-                self.opinions[neighbor_node]
-                for neighbor_node in self.neighborhood[node]
-            ]
-            self.votes[node] = majority_winner(neighborhood_opinions)
+        self.votes[self.neighborhood_opinions > self.degree / 2] = 1
+        tie_indices = self.neighborhood_opinions == self.degree / 2
+        self.votes[tie_indices] = np.random.randint(
+            low=0, high=2, size=sum(tie_indices)
+        )
 
+    @time_this_function
     def update_opinions(self):
         for node_elite in self.nodes_elite:
             if rd.random() < self.elite_competence:
-                self.opinions[node_elite] = 1
-            else:
-                self.opinions[node_elite] = 0
+                neighborhood = self.neighborhood[node_elite]
+                self.neighborhood_opinions[neighborhood] = (
+                    self.neighborhood_opinions[neighborhood] + 1
+                )
 
         for node_mass in self.nodes_mass:
-            if rd.random() < self.mass_competence:
-                self.opinions[node_mass] = 0
-            else:
-                self.opinions[node_mass] = 1
+            if rd.random() > self.mass_competence:
+                neighborhood = self.neighborhood[node_mass]
+                self.neighborhood_opinions[neighborhood] = (
+                    self.neighborhood_opinions[neighborhood] + 1
+                )
