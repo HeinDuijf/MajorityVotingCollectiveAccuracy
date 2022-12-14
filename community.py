@@ -1,6 +1,7 @@
 import random as rd
 
 import networkx as nx
+import numpy as np
 from statsmodels.stats.proportion import proportion_confint
 
 from basic_functions import majority_winner
@@ -19,13 +20,19 @@ class Community:
         edges: list = None,
     ):
         self.number_of_nodes: int = number_of_nodes
+        # Todo: add assertion like:
+        # assert number_of_elites < number_of_nodes
         self.number_of_elites: int = number_of_elites
         self.number_of_mass: int = number_of_nodes - number_of_elites
         self.degree: int = degree
         self.elite_competence: float = elite_competence
         self.mass_competence: float = mass_competence
-        self.probability_preferential_attachment: float = probability_preferential_attachment
-        self.probability_homophilic_attachment: float = probability_homophilic_attachment
+        self.probability_preferential_attachment: float = (
+            probability_preferential_attachment
+        )
+        self.probability_homophilic_attachment: float = (
+            probability_homophilic_attachment
+        )
         self.edges = edges
 
         self.nodes: list = list(range(number_of_nodes))
@@ -37,14 +44,14 @@ class Community:
 
     def create_network(self):
         """Returns a directed network according to multi-type preferential
-        attachment by amending the Barabási–Albert preferential attachment procedure,
+        attachment by amending the Barabási-Albert preferential attachment procedure,
         unless edges are given."""
         if self.edges is not None:
-            # Create network from edges
             self.network = self.create_network_from_edges()
+            self.initialize_node_attributes()
             return self.network
 
-        # Create initial network
+        # Create initial network.
         if self.probability_homophilic_attachment is None:
             # Create network without homophilic influence
             initial_network = (
@@ -53,10 +60,8 @@ class Community:
         else:
             initial_network = self.create_initial_network_with_homophilic_attachment()
 
-        # Preferential rewiring
-        self.network = self.rewire_network_using_preferential_attachment(
-            initial_network
-        )
+        # Preferential rewiring.
+        self.network = self.rewire_network(initial_network)
         self.initialize_node_attributes()
         return self.network
 
@@ -85,68 +90,71 @@ class Community:
         initial_network.add_nodes_from(self.nodes)
 
         # Homophilic attachment
-        nodes_unsaturated = self.nodes.copy()
-        while nodes_unsaturated:
-            source = rd.choice(nodes_unsaturated)
-            if rd.random() < self.probability_homophilic_attachment:
-                if source in self.nodes_elite:
-                    nodes_same_type = self.nodes_elite.copy()
-                else:
-                    nodes_same_type = self.nodes_mass.copy()
+        for node in self.nodes:
+            random_list = np.random.random_sample(self.degree)
+            number_targets_same_type = len(
+                [x for x in random_list if x < self.probability_homophilic_attachment]
+            )
+            number_targets_diff_type = self.degree - number_targets_same_type
+            if node in self.nodes_elite:
+                nodes_same_type = self.nodes_elite.copy()
+                nodes_same_type.remove(node)
+                nodes_diff_type = self.nodes_mass
             else:
-                if source in self.nodes_elite:
-                    nodes_same_type = self.nodes_mass.copy()
-                else:
-                    nodes_same_type = self.nodes_elite.copy()
-
-            non_targets: set = set(initial_network[source]).union({source})
-            targets = list(set(nodes_same_type).difference(non_targets))
-            target = rd.choice(targets)
-            initial_network.add_edge(source, target)
-
-            # remove node from sources if it is already saturated
-            if initial_network.out_degree(source) == self.degree:
-                nodes_unsaturated.remove(source)
+                nodes_same_type = self.nodes_mass.copy()
+                nodes_same_type.remove(node)
+                nodes_diff_type = self.nodes_elite
+            targets_same_type = rd.sample(nodes_same_type, number_targets_same_type)
+            targets_diff_type = rd.sample(nodes_diff_type, number_targets_diff_type)
+            targets = targets_same_type + targets_diff_type
+            edges_from_source = [(node, target) for target in targets]
+            initial_network.add_edges_from(edges_from_source)
         return initial_network
 
-    def rewire_network_using_preferential_attachment(self, initial_network):
+    def rewire_network(self, initial_network):
         # Initialize network and nodes
         network = nx.DiGraph()
         network.add_nodes_from(self.nodes)
 
         # Multi-type preferential attachment
         edges_to_do = list(initial_network.edges()).copy()
-        while edges_to_do:
-            source, target = rd.choice(edges_to_do)
-            # Define possible targets as nodes of the same type as target
+        rd.shuffle(edges_to_do)
+        for (source, target) in edges_to_do:
+            # Define potential targets
             if target in self.nodes_elite:
-                nodes_of_target_type = self.nodes_elite.copy()
+                nodes_of_target_type = self.nodes_elite
             else:
-                nodes_of_target_type = self.nodes_mass.copy()
-            non_targets: set = set(network[source]).union({source})
-            targets = list(set(nodes_of_target_type).difference(non_targets))
+                nodes_of_target_type = self.nodes_mass
+            potential_targets = [
+                node
+                for node in nodes_of_target_type
+                if node not in network[source] and node != source
+            ]
 
-            # Preferential attachment for targets of specified type
-            population = list(
-                network.in_degree(targets)
-            )  # list of tuples of the form (node, in_degree of node)
-            targets_in_degrees = list(map(lambda tuple_item: tuple_item[1], population))
             if rd.random() < self.probability_preferential_attachment:
-                target_new = rd.choice(targets)
-            else:
-                if not targets:
+                # Preferential attachment
+                list_of_tuples = list(
+                    network.in_degree(potential_targets)
+                )  # list of tuples of the form (node, in_degree of node)
+                potential_targets_in_degrees = list(
+                    map(lambda tuple_item: tuple_item[1], list_of_tuples)
+                )
+                if not potential_targets:
                     break
-                elif all(w == 0 for w in targets_in_degrees):
+                elif all(w == 0 for w in potential_targets_in_degrees):
                     # catches the case where all weights are zero
-                    target_new = rd.choice(targets)
+                    target_new = rd.choice(potential_targets)
                 else:
-                    target_new, target_new_in_degree = rd.choices(
-                        population=population, weights=targets_in_degrees
+                    target_new = rd.choices(
+                        population=potential_targets,
+                        weights=potential_targets_in_degrees,
                     )[0]
                     # Note on [0]: rd.choices produces a list
+            else:
+                # Random attachment
+                target_new = rd.choice(potential_targets)
             # add edge to new network and remove edge from edges_to_do
             network.add_edge(source, target_new)
-            edges_to_do.remove((source, target))
         return network
 
     def initialize_node_attributes(self):
@@ -166,23 +174,18 @@ class Community:
         return len(edges_to_elites)
 
     def total_influence_mass(self):
-        edges_to_mass = [
-            (source, target)
-            for (source, target) in self.network.edges()
-            if target in self.nodes_mass
-        ]
-        return len(edges_to_mass)
+        return len(self.network.edges()) - self.total_influence_elites()
 
-    # TODO: 1. Estimated accuracy seems very inaccurate. Perhaps do binomial proportion
+    # TODO (hein)
+    # 1. Estimated accuracy seems very inaccurate. Perhaps do binomial proportion
     #  confidence interval? 2. Perhaps move this function outside the class?
     def estimated_community_accuracy(
         self, number_of_voting_simulations, alpha: float = 0.05
     ):
-        number_of_success: int = 0
-        for simulation in range(number_of_voting_simulations):
-            vote_outcome = self.vote()
-            if vote_outcome == "mass":
-                number_of_success = number_of_success + 1
+        vote_outcomes = [self.vote() for _ in range(number_of_voting_simulations)]
+        number_of_success = len(
+            [outcome for outcome in vote_outcomes if outcome == "mass"]
+        )
         estimated_accuracy = number_of_success / number_of_voting_simulations
         confidence_interval = proportion_confint(
             number_of_success, number_of_voting_simulations, alpha=alpha
@@ -196,7 +199,6 @@ class Community:
     def vote(self):
         self.update_votes()
         list_of_votes = [self.network.nodes[node]["vote"] for node in self.nodes]
-        majority_winner(list_of_votes)
         return majority_winner(list_of_votes)
 
     def update_votes(self):
