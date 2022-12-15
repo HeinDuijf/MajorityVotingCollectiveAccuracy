@@ -192,13 +192,13 @@ class Community:
 
     def vote(self):
         nodes_influenced_by_elite_opinion = self.count_elite_opinion_influence()
-        nodes_elite_influence = Counter(nodes_influenced_by_elite_opinion)
+        elite_influence_counter = Counter(nodes_influenced_by_elite_opinion)
 
         elite_votes = 0
-        for node in nodes_elite_influence:
-            if nodes_elite_influence[node] > self.degree / 2:
+        for node in elite_influence_counter:
+            if elite_influence_counter[node] > self.degree / 2:
                 elite_votes = elite_votes + 1
-            elif nodes_elite_influence[node] == self.degree / 2:
+            elif elite_influence_counter[node] == self.degree / 2:
                 elite_votes = elite_votes + random.randint(0, 1)
 
         if elite_votes > self.number_of_nodes / 2:
