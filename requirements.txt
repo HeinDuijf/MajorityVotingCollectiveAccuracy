@@ -6,3 +6,4 @@ seaborn
 networkx
 statsmodels
 pytest
+unittest

@@ -1,4 +1,3 @@
-import random as rd
 import networkx as nx
 import numpy as np
 from statsmodels.stats.proportion import proportion_confint
@@ -84,7 +83,7 @@ class Community:
         for node in self.nodes:
             potential_targets = self.nodes.copy()
             potential_targets.remove(node)
-            targets = rd.sample(potential_targets, self.degree)
+            targets = random.sample(potential_targets, self.degree)
             edges_from_node = [(node, target) for target in targets]
             initial_network.add_edges_from(edges_from_node)
         return initial_network
@@ -109,8 +108,8 @@ class Community:
                 nodes_same_type = self.nodes_mass.copy()
                 nodes_same_type.remove(node)
                 nodes_diff_type = self.nodes_elite
-            targets_same_type = rd.sample(nodes_same_type, number_targets_same_type)
-            targets_diff_type = rd.sample(nodes_diff_type, number_targets_diff_type)
+            targets_same_type = random.sample(nodes_same_type, number_targets_same_type)
+            targets_diff_type = random.sample(nodes_diff_type, number_targets_diff_type)
             targets = targets_same_type + targets_diff_type
             edges_from_source = [(node, target) for target in targets]
             initial_network.add_edges_from(edges_from_source)
@@ -123,7 +122,7 @@ class Community:
 
         # Multi-type preferential attachment
         edges_to_do = list(initial_network.edges()).copy()
-        rd.shuffle(edges_to_do)
+        random.shuffle(edges_to_do)
         for (source, target) in edges_to_do:
             # Define potential targets
             if target in self.nodes_elite:
@@ -136,7 +135,7 @@ class Community:
                 if node not in network[source] and node != source
             ]
 
-            if rd.random() < self.probability_preferential_attachment:
+            if random.random() < self.probability_preferential_attachment:
                 # Preferential attachment
                 list_of_tuples = list(
                     network.in_degree(potential_targets)
@@ -148,16 +147,16 @@ class Community:
                     break
                 elif all(w == 0 for w in potential_targets_in_degrees):
                     # catches the case where all weights are zero
-                    target_new = rd.choice(potential_targets)
+                    target_new = random.choice(potential_targets)
                 else:
-                    target_new = rd.choices(
+                    target_new = random.choices(
                         population=potential_targets,
                         weights=potential_targets_in_degrees,
                     )[0]
                     # Note on [0]: rd.choices produces a list
             else:
                 # Random attachment
-                target_new = rd.choice(potential_targets)
+                target_new = random.choice(potential_targets)
             # add edge to new network and remove edge from edges_to_do
             network.add_edge(source, target_new)
         return network
@@ -180,9 +179,7 @@ class Community:
         self, number_of_voting_simulations, alpha: float = 0.05
     ):
         vote_outcomes = [self.vote() for _ in range(number_of_voting_simulations)]
-        number_of_success = len(
-            [outcome for outcome in vote_outcomes if outcome == "mass"]
-        )
+        number_of_success = len([outcome for outcome in vote_outcomes if outcome == 0])
         estimated_accuracy = number_of_success / number_of_voting_simulations
         confidence_interval = proportion_confint(
             number_of_success, number_of_voting_simulations, alpha=alpha
@@ -194,13 +191,14 @@ class Community:
         return result
 
     def vote(self):
-        elite_opinion_influence_counter = self.count_elite_influence()
-        
+        nodes_influenced_by_elite_opinion = self.count_elite_opinion_influence()
+        nodes_elite_influence = Counter(nodes_influenced_by_elite_opinion)
+
         elite_votes = 0
-        for node in elite_opinion_influence_counter:
-            if elite_opinion_influence_counter[node] > self.degree / 2:
+        for node in nodes_elite_influence:
+            if nodes_elite_influence[node] > self.degree / 2:
                 elite_votes = elite_votes + 1
-            elif elite_opinion_influence_counter[node] == self.degree / 2:
+            elif nodes_elite_influence[node] == self.degree / 2:
                 elite_votes = elite_votes + random.randint(0, 1)
 
         if elite_votes > self.number_of_nodes / 2:
@@ -210,14 +208,14 @@ class Community:
         else:
             return 0
 
-    def count_elite_influence(self):
+    def count_elite_opinion_influence(self):
         nodes_influenced_by_elite_opinion = []
         for node_elite in self.nodes_elite:
-            if rd.random() < self.elite_competence:
+            if random.random() < self.elite_competence:
                 nodes_influenced_by_elite_opinion.extend(self.neighborhood[node_elite])
 
         for node_mass in self.nodes_mass:
-            if rd.random() > self.mass_competence:
+            if random.random() > self.mass_competence:
                 nodes_influenced_by_elite_opinion.extend(self.neighborhood[node_mass])
 
-        return Counter(nodes_influenced_by_elite_opinion)
+        return nodes_influenced_by_elite_opinion
