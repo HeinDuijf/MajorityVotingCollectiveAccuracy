@@ -1,4 +1,4 @@
-collective_accuracy,collective_accuracy_precision,minority_competence, majority_competence,number_of_minority,influence_minority_proportion,homophily
+collective_accuracy,collective_accuracy_precision,minority_competence,majority_competence,number_of_minority,influence_minority_proportion,homophily
 0.6, 0.1920364670542125, 0.6169501237410764, 0.6247110836425269, 30, 0.5133333333333333, 0.5064404050655844
 0.21, 0.15966189505992417, 0.6956151380103239, 0.5517721602132932, 31, 0.4066666666666667, 0.7233012922122904
 0.51, 0.19595719525360256, 0.667135154289466, 0.6484872742475611, 33, 0.45666666666666667, 0.74554251422418
