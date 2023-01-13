@@ -16,3 +16,22 @@ def majority_winner(values: list):
         return cfg.vote_for_mass
     else:
         return rd.choice([cfg.vote_for_mass, cfg.vote_for_elites])
+
+
+def convert_math_to_text(string: str):
+    string.replace(" ", "")
+    string.split("+")
+    output = []
+    if "p_e" in string:
+        output.append("minority_competence")
+    if "p_m" in string:
+        output.append("majority_competence")
+    if "E" in string:
+        output.append("number_of_minority")
+    if "I_e" in string:
+        output.append("influence_minority_proportion")
+    if "h" in string:
+        output.append("homophily")
+    if len(output) == 1:
+        output = "".join(output)
+    return output
