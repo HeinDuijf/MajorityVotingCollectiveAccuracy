@@ -19,6 +19,8 @@ def majority_winner(values: list):
 
 
 def convert_math_to_text(string: str):
+    """ Converts math to text.
+    For example, "p_e" is converted to "minority_competence"."""
     string.replace(" ", "")
     string.split("+")
     output = []
