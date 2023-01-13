@@ -2,7 +2,8 @@ import os
 import random as rd
 
 from community import Community
-from save_read_community import read_community_from_file, save_community_to_file
+from save_read_community import (read_community_from_file,
+                                 save_community_to_file)
 
 
 class Simulation:
@@ -112,7 +113,7 @@ class Simulation:
         head_line = (
             "collective_accuracy,"
             + "collective_accuracy_precision,"
-            + "minority_competence, "
+            + "minority_competence,"
             + "majority_competence,"
             + "number_of_minority,"
             + "influence_minority_proportion,"
