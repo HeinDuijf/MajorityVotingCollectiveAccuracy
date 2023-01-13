@@ -1,6 +1,7 @@
 .idea
 venv
 .venv
+test/.pytest_cache
 notes.md
 data/communities
 __pycache__

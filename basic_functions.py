@@ -1,12 +1,18 @@
 import random as rd
-from collections import Counter
 
-
-def most_frequent(values: list):
-    count = Counter(values)
-    max_count = max(count.values())
-    return [value for value, count_value in count.items() if count_value == max_count]
+import config as cfg
 
 
 def majority_winner(values: list):
-    return rd.choice(most_frequent(values))
+    """ Basic function to determine the majority winner in a binary decision context."""
+    number_votes_for_elites = len(
+        [value for value in values if value == cfg.vote_for_elites]
+    )
+    number_votes_for_mass = len(values) - number_votes_for_elites
+    threshold = len(values) / 2
+    if number_votes_for_elites > threshold:
+        return cfg.vote_for_elites
+    elif number_votes_for_mass > threshold:
+        return cfg.vote_for_mass
+    else:
+        return rd.choice([cfg.vote_for_mass, cfg.vote_for_elites])
