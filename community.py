@@ -4,6 +4,7 @@ import networkx as nx
 import numpy as np
 from statsmodels.stats.proportion import proportion_confint
 
+import config as cfg
 from basic_functions import majority_winner
 
 
@@ -20,8 +21,6 @@ class Community:
         edges: list = None,
     ):
         self.number_of_nodes: int = number_of_nodes
-        # Todo: add assertion like:
-        # assert number_of_elites < number_of_nodes
         self.number_of_elites: int = number_of_elites
         self.number_of_mass: int = number_of_nodes - number_of_elites
         self.degree: int = degree
@@ -184,7 +183,7 @@ class Community:
     ):
         vote_outcomes = [self.vote() for _ in range(number_of_voting_simulations)]
         number_of_success = len(
-            [outcome for outcome in vote_outcomes if outcome == "mass"]
+            [outcome for outcome in vote_outcomes if outcome == cfg.vote_for_mass]
         )
         estimated_accuracy = number_of_success / number_of_voting_simulations
         confidence_interval = proportion_confint(
@@ -214,11 +213,11 @@ class Community:
     def update_opinions(self):
         for node_elite in self.nodes_elite:
             if rd.random() < self.elite_competence:
-                self.network.nodes[node_elite]["opinion"] = "elite"
+                self.network.nodes[node_elite]["opinion"] = cfg.vote_for_elites
             else:
-                self.network.nodes[node_elite]["opinion"] = "mass"
+                self.network.nodes[node_elite]["opinion"] = cfg.vote_for_mass
         for node_mass in self.nodes_mass:
             if rd.random() < self.mass_competence:
-                self.network.nodes[node_mass]["opinion"] = "mass"
+                self.network.nodes[node_mass]["opinion"] = cfg.vote_for_mass
             else:
-                self.network.nodes[node_mass]["opinion"] = "elite"
+                self.network.nodes[node_mass]["opinion"] = cfg.vote_for_elites
