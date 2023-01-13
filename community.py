@@ -32,7 +32,7 @@ class Community:
         self.probability_homophilic_attachment: float = (
             probability_homophilic_attachment
         )
-        self.edges = edges
+        self.edges: list = edges
 
         self.nodes: list = list(range(number_of_nodes))
         self.nodes_elite: list = self.nodes[: self.number_of_elites]
@@ -175,12 +175,19 @@ class Community:
     def total_influence_mass(self):
         return len(self.network.edges()) - self.total_influence_elites()
 
-    # TODO (hein)
-    # 1. Estimated accuracy seems very inaccurate. Perhaps do binomial proportion
-    #  confidence interval? 2. Perhaps move this function outside the class?
     def estimated_community_accuracy(
-        self, number_of_voting_simulations, alpha: float = 0.05
+        self, number_of_voting_simulations: int, alpha: float = 0.05
     ):
+        """ Method for estimating the collective accuracy of the community.
+        :param number_of_voting_simulations
+            Number of simulations to estimate the collective accuracy
+        :param alpha:
+            p-value for confidence interval.
+        :returns result: dict
+            result["accuracy"]: estimated collective accuracy,
+            result["precision"]: the confidence interval associated with p-value
+            alpha
+        """
         vote_outcomes = [self.vote() for _ in range(number_of_voting_simulations)]
         number_of_success = len(
             [outcome for outcome in vote_outcomes if outcome == cfg.vote_for_mass]
