@@ -87,8 +87,6 @@ class Simulation:
             f.write(information)
 
     def random_community(self):
-        # TODO: what is the advantage of picking these things randomly,
-        # compared to looping over a list of options?
         elite_competence: float = rd.uniform(*self.elite_competence_range)
         mass_competence: float = rd.uniform(*self.mass_competence_range)
         probability_homophilic_attachment: float = rd.uniform(
@@ -124,13 +122,7 @@ class Simulation:
             f.write(head_line)
 
     def simulate_and_write_data_line(self, community: Community):
-        # TODO: it's a bit cluttery to gather these parameters in a variable just to print them.
-        # Instead you can just write: data_line = f"{community.elite_competence}, {community.bla}"
-        # Gather parameters
-        minority_competence = community.elite_competence
-        majority_competence = community.mass_competence
-        number_of_minority = community.number_of_elites
-        homophily = community.probability_homophilic_attachment
+        # Determine influence_minority_proportion
         total_influence_minority = community.total_influence_elites()
         total_influence_majority = community.total_influence_mass()
         influence_minority_proportion = total_influence_minority / (
@@ -146,8 +138,9 @@ class Simulation:
         # Print results to line in csv folder
         data_line = (
             f"{collective_accuracy}, {collective_accuracy_precision}, "
-            f"{minority_competence}, {majority_competence}, {number_of_minority}, "
-            f"{influence_minority_proportion}, {homophily}"
+            f"{community.elite_competence}, {community.mass_competence}, "
+            f"{community.number_of_elites}, {influence_minority_proportion}, "
+            f"{community.probability_homophilic_attachment}"
         )
         with open(self.filename, "a") as f:
             f.write(f"\n{data_line}")
