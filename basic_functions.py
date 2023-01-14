@@ -21,19 +21,16 @@ def majority_winner(values: list):
 def convert_math_to_text(string: str):
     """ Converts math to text.
     For example, "p_e" is converted to "minority_competence"."""
-    string.replace(" ", "")
-    string.split("+")
-    output = []
-    if "p_e" in string:
-        output.append("minority_competence")
-    if "p_m" in string:
-        output.append("majority_competence")
-    if "E" in string:
-        output.append("number_of_minority")
-    if "I_e" in string:
-        output.append("influence_minority_proportion")
-    if "h" in string:
-        output.append("homophily")
-    if len(output) == 1:
-        output = "".join(output)
-    return output
+    words = string.replace("+", " ").split(" ")
+    words = [word for word in words if word != ""]
+    convert: dict = {
+        "p_e": "minority_competence",
+        "p_m": "majority_competence",
+        "E": "number_of_minority",
+        "I_e": "influence_minority_proportion",
+        "h": "homophily",
+    }
+    if len(words) == 1:
+        return convert[words[0]]
+    else:
+        return [convert[word] for word in words]
