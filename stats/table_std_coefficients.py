@@ -20,9 +20,9 @@ def table_std_coefficients(data_file: str = "data/clean.csv", output_file: str =
         "high": [0.65, 0.70],
     }
 
-    for subdata_type in subdata_vars.keys():
-        competence_range = subdata_vars[subdata_type]
-        subdata = df.loc[
+    for subdata_key in subdata_vars.keys():
+        competence_range = subdata_vars[subdata_key]
+        df_sub = df.loc[
             (df["minority_competence"] > min(competence_range))
             & (df["minority_competence"] < max(competence_range))
             & (df["majority_competence"] > min(competence_range))
@@ -31,14 +31,15 @@ def table_std_coefficients(data_file: str = "data/clean.csv", output_file: str =
 
         # Standardized coefficients
         variables = [convert_math_to_text(row) for row in rows]
-        df_norm = pd.DataFrame(stats.zscore(subdata))
+        df_norm = pd.DataFrame(stats.zscore(df_sub))
         Y_norm = df_norm[output]
         X_norm = df_norm[variables]
         X_norm = sm.add_constant(X_norm)
         model_norm = sm.OLS(Y_norm, X_norm).fit()
         for row in rows:
             variable = convert_math_to_text(row)
-            table.loc[rows, subdata_type] = round(model_norm.params[variable], 4)
+            table.loc[rows, subdata_key] = round(model_norm.params[variable], 4)
+
     if not output_file:
         return table
     else:
