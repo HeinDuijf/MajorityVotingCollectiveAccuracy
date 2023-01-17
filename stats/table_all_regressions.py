@@ -64,14 +64,13 @@ def table_all_regressions(data_file: str = "data/clean.csv", output_file: str = 
         table.loc[row, "root mean square error"] = round(root_mean_square_error, 3)
         table.loc[row, "F value"] = round(model.fvalue)
 
-        # standardized coefficients
+        # p-value, coefficients and standardized coefficients
         df_norm = pd.DataFrame(stats.zscore(df))
         Y_norm = df_norm[output]
         X_norm = df_norm[variables]
         X_norm = sm.add_constant(X_norm)
         model_norm = sm.OLS(Y_norm, X_norm).fit()
 
-        #
         for variable in variables:
             column_p = f"{variable}_p_value"
             table.loc[row, column_p] = round(model.pvalues[variable], 4)
@@ -79,6 +78,7 @@ def table_all_regressions(data_file: str = "data/clean.csv", output_file: str = 
             table.loc[row, column_c] = round(model.params[variable], 4)
             column_cstd = f"{variable}_coeff_std"
             table.loc[row, column_cstd] = round(model_norm.params[variable], 4)
+
     if not output_file:
         return table
     else:
