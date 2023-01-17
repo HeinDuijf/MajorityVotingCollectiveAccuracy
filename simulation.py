@@ -2,8 +2,7 @@ import os
 import random as rd
 
 from community import Community
-from save_read_community import (read_community_from_file,
-                                 save_community_to_file)
+from save_read_community import read_community_from_file, save_community_to_file
 
 
 class Simulation:
@@ -37,9 +36,9 @@ class Simulation:
 
     def run(self):
         os.makedirs(f"{self.folder}", exist_ok=True)
-        self.generate_communities()
-        self.run_folder()
         self.write_readme()
+        self.generate_communities()
+        self.run_simulations_and_save_results_to_csv()
         print("The simulation is a great success.")
 
     def generate_communities(self):
@@ -52,7 +51,7 @@ class Simulation:
             self.report_progress(progress_message, community_number)
         print(f"The communities are generated in folder {self.folder}.")
 
-    def run_folder(self):
+    def run_simulations_and_save_results_to_csv(self):
         self.write_head_line()
         for community_number in range(self.number_of_communities):
             community = read_community_from_file(
