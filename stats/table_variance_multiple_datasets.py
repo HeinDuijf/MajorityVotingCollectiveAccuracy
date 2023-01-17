@@ -29,9 +29,9 @@ def table_variance_multiple_datasets(
     }
 
     # Analysis
-    for subdata_type in subdata_vars.keys():
-        competence_range = subdata_vars[subdata_type]
-        subdata = df.loc[
+    for subdata_key in subdata_vars.keys():
+        competence_range = subdata_vars[subdata_key]
+        df_sub = df.loc[
             (df["minority_competence"] > min(competence_range))
             & (df["minority_competence"] < max(competence_range))
             & (df["majority_competence"] > min(competence_range))
@@ -39,11 +39,11 @@ def table_variance_multiple_datasets(
         ]
         for row in rows:
             variables = convert_math_to_text(row)
-            Y = subdata[output]
-            X = subdata[variables]
+            Y = df_sub[output]
+            X = df_sub[variables]
             X = sm.add_constant(X)
             model = sm.OLS(Y, X).fit()
-            table.loc[row, subdata_type] = round(model.rsquared, 3)
+            table.loc[row, subdata_key] = round(model.rsquared, 3)
 
     if not output_file:
         return table
