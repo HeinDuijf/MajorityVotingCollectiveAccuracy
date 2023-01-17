@@ -1,5 +1,6 @@
 .idea
 venv
+archive
 .venv
 test/.pytest_cache
 notes.md
