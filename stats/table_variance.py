@@ -31,7 +31,6 @@ def table_variance(data_file: str = "data/clean.csv", output_file: str = None):
     if not output_file:
         return table
     else:
-        print("yay")
         table.to_csv(f"stats/{output_file}.csv")
 
 
