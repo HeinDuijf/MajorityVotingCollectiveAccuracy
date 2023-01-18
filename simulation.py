@@ -2,7 +2,8 @@ import os
 import random as rd
 
 from community import Community
-from save_read_community import read_community_from_file, save_community_to_file
+from save_read_community import (read_community_from_file,
+                                 save_community_to_file)
 
 
 class Simulation:
@@ -47,7 +48,7 @@ class Simulation:
             save_community_to_file(
                 f"{self.folder}/communities/{community_number}.txt", community=community
             )
-            progress_message = "Progress generate_communities"
+            progress_message = "Progress generating communities"
             self.report_progress(progress_message, community_number)
         print(f"The communities are generated in folder {self.folder}.")
 
@@ -58,7 +59,7 @@ class Simulation:
                 f"{self.folder}/communities/{community_number}"
             )
             self.simulate_and_write_data_line(community)
-            progress_message = "Progress run_folder"
+            progress_message = "Progress voting simulations and saving results"
             self.report_progress(progress_message, community_number)
         print(
             f"The simulation involving the communities in folder {self.folder} is a "
