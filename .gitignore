@@ -2,7 +2,7 @@
 venv
 archive
 .venv
-test/.pytest_cache
+tests/.pytest_cache
 notes.md
 data/communities
 __pycache__
