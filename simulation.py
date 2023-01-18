@@ -1,9 +1,10 @@
+import concurrent.futures as cf
+import multiprocessing
 import os
 import random as rd
 
 from community import Community
-from save_read_community import (read_community_from_file,
-                                 save_community_to_file)
+from save_read_community import read_community_from_file, save_community_to_file
 
 
 class Simulation:
@@ -38,13 +39,25 @@ class Simulation:
     def run(self):
         os.makedirs(f"{self.folder}", exist_ok=True)
         self.write_readme()
-        self.generate_communities()
-        self.run_simulations_and_save_results_to_csv()
+        self.write_head_line()
+        with cf.ProcessPoolExecutor() as executor:
+            executor.map(self.single_run, range(self.number_of_communities))
+        # for community_number in range(self.number_of_communities):
+        #     self.single_run(number=community_number)
         print("The simulation is a great success.")
+
+    def single_run(self, number: int):
+        community = self.generate_community()
+        save_community_to_file(
+            f"{self.folder}/communities/" f"{number}.txt", community=community
+        )
+        self.simulate_and_write_data_line(community=community, number=number)
+        progress_message = "Progress"
+        self.report_progress(progress_message, number)
 
     def generate_communities(self):
         for community_number in range(self.number_of_communities):
-            community = self.random_community()
+            community = self.generate_community()
             save_community_to_file(
                 f"{self.folder}/communities/{community_number}.txt", community=community
             )
@@ -87,7 +100,7 @@ class Simulation:
         with open(filename_readme, "w") as f:
             f.write(information)
 
-    def random_community(self):
+    def generate_community(self):
         elite_competence: float = rd.uniform(*self.elite_competence_range)
         mass_competence: float = rd.uniform(*self.mass_competence_range)
         probability_homophilic_attachment: float = rd.uniform(
@@ -111,7 +124,8 @@ class Simulation:
 
     def write_head_line(self):
         head_line = (
-            "collective_accuracy,"
+            "community_number"
+            + "collective_accuracy,"
             + "collective_accuracy_precision,"
             + "minority_competence,"
             + "majority_competence,"
@@ -122,7 +136,7 @@ class Simulation:
         with open(self.filename, "w") as f:
             f.write(head_line)
 
-    def simulate_and_write_data_line(self, community: Community):
+    def simulate_and_write_data_line(self, community: Community, number: int):
         # Determine influence_minority_proportion
         total_influence_minority = community.total_influence_elites()
         total_influence_majority = community.total_influence_mass()
@@ -138,7 +152,7 @@ class Simulation:
 
         # Print results to line in csv folder
         data_line = (
-            f"{collective_accuracy}, {collective_accuracy_precision}, "
+            f"{number}, {collective_accuracy}, {collective_accuracy_precision}, "
             f"{community.elite_competence}, {community.mass_competence}, "
             f"{community.number_of_elites}, {influence_minority_proportion}, "
             f"{community.probability_homophilic_attachment}"
