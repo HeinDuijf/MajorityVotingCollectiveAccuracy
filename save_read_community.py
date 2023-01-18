@@ -1,7 +1,28 @@
-import ast
 import os
+import pickle
 
 from community import Community
+
+
+def edges_compress(edges: list):
+    edges = list(edges)
+    edges_dict = {}
+    for source, target in edges:
+        if source not in edges_dict.keys():
+            edges_dict[source] = [target]
+        else:
+            edges_dict[source].append(target)
+    return edges_dict
+
+
+def edges_unpack(edges_dict: dict):
+    edges_dict = dict(edges_dict)
+    edges = [
+        (source, target)
+        for source in edges_dict.keys()
+        for target in edges_dict[source]
+    ]
+    return edges
 
 
 def save_community_to_file(filename: str, community: Community):
@@ -15,17 +36,16 @@ def save_community_to_file(filename: str, community: Community):
         "mass_competence": community.mass_competence,
         "probability_preferential_attachment": community.probability_preferential_attachment,
         "probability_homophilic_attachment": community.probability_homophilic_attachment,
-        "edges": list(community.network.edges()),
+        "edges": edges_compress(community.network.edges()),
     }
-    community_str = str(community_dict)
-    with open(filename, "w+") as f:
-        f.write(community_str)
+    with open(f"{filename}", "wb") as f:
+        pickle.dump(community_dict, f, protocol=-1)
 
 
 def read_community_from_file(filename: str):
-    with open(f"{filename}.txt", "r") as f:
-        community_dict = ast.literal_eval(
-            f.read()
-        )  # turns the dictionary string into dictionary object
+    with open(f"{filename}", "rb") as f:
+        community_dict = pickle.load(f)
+    edges = edges_unpack(community_dict["edges"])
+    community_dict["edges"] = edges
     community = Community(**community_dict)
     return community
