@@ -16,7 +16,7 @@ def table_std_coefficients(data_file: str = "data/clean.csv", output_file: str =
     subdata_vars: dict = {
         "full": [0, 1],
         "low": [0.55, 0.60],
-        "med": [0.60, 0, 65],
+        "med": [0.60, 0.65],
         "high": [0.65, 0.70],
     }
 
@@ -38,7 +38,7 @@ def table_std_coefficients(data_file: str = "data/clean.csv", output_file: str =
         model_norm = sm.OLS(Y_norm, X_norm).fit()
         for row in rows:
             variable = convert_math_to_text(row)
-            table.loc[rows, subdata_key] = round(model_norm.params[variable], 4)
+            table.loc[row, subdata_key] = round(model_norm.params[variable], 4)
 
     if not output_file:
         return table

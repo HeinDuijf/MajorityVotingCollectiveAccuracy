@@ -24,7 +24,7 @@ def table_variance_multiple_datasets(
     # Setting variable range for subdata
     subdata_vars: dict = {
         "low": [0.55, 0.60],
-        "med": [0.60, 0, 65],
+        "med": [0.60, 0.65],
         "high": [0.65, 0.70],
     }
 

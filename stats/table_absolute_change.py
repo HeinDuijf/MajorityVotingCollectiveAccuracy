@@ -15,7 +15,7 @@ def table_absolute_change(data_file: str = "data/clean.csv", output_file: str = 
     subdata_vars: dict = {
         "full": [0, 1],
         "low": [0.55, 0.60],
-        "med": [0.60, 0, 65],
+        "med": [0.60, 0.65],
         "high": [0.65, 0.70],
     }
 
