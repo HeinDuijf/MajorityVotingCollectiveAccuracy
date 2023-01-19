@@ -49,21 +49,11 @@ class Simulation:
     def single_run(self, number: int):
         community = self.generate_community()
         save_community_to_file(
-            f"{self.folder}/communities/" f"{number}.txt", community=community
+            filename=f"{self.folder}/communities/{number}", community=community
         )
         self.simulate_and_write_data_line(community=community, number=number)
         progress_message = "Progress"
         self.report_progress(progress_message, number)
-
-    def generate_communities(self):
-        for community_number in range(self.number_of_communities):
-            community = self.generate_community()
-            save_community_to_file(
-                f"{self.folder}/communities/{community_number}.txt", community=community
-            )
-            progress_message = "Progress generating communities"
-            self.report_progress(progress_message, community_number)
-        print(f"The communities are generated in folder {self.folder}.")
 
     def run_simulations_and_save_results_to_csv(self):
         self.write_head_line()
@@ -124,7 +114,7 @@ class Simulation:
 
     def write_head_line(self):
         head_line = (
-            "community_number"
+            "community_number,"
             + "collective_accuracy,"
             + "collective_accuracy_precision,"
             + "minority_competence,"
