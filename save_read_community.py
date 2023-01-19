@@ -1,5 +1,5 @@
+import json
 import os
-import pickle
 
 from community import Community
 
@@ -39,12 +39,12 @@ def save_community_to_file(filename: str, community: Community):
         "edges": edges_compress(community.network.edges()),
     }
     with open(f"{filename}", "wb") as f:
-        pickle.dump(community_dict, f, protocol=-1)
+        json.dump(community_dict, f, protocol=-1)
 
 
 def read_community_from_file(filename: str):
     with open(f"{filename}", "rb") as f:
-        community_dict = pickle.load(f)
+        community_dict = json.load(f)
     edges = edges_unpack(community_dict["edges"])
     community_dict["edges"] = edges
     community = Community(**community_dict)
