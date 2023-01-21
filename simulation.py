@@ -2,9 +2,11 @@ import concurrent.futures as cf
 import os
 import random as rd
 import shutil
+import time
 
 from community import Community
-from save_read_community import read_community_from_file, save_community_to_file
+from save_read_community import (read_community_from_file,
+                                 save_community_to_file)
 
 
 class Simulation:
@@ -22,6 +24,7 @@ class Simulation:
         number_of_elites_range=(25, 45),
         probability_homophilic_attachment_range=(0.5, 0.75),
     ):
+        self.start_time = time.time()
         self.filename_csv = f"{filename_csv}.csv"
         self.folder_communities = folder_communities
         self.number_of_communities = number_of_communities
@@ -37,6 +40,7 @@ class Simulation:
         )
 
     def run(self):
+        self.start_time = time.time()
         if os.path.exists(f"{self.folder_communities}"):
             shutil.rmtree(f"{self.folder_communities}")
         os.makedirs(f"{self.folder_communities}", exist_ok=True)
@@ -57,8 +61,7 @@ class Simulation:
             community=community,
         )
         self.simulate_and_write_data_line(community=community, number=number)
-        progress_message = "Progress"
-        self.report_progress(progress_message, number)
+        self.report_progress(number)
 
     def run_simulations_and_save_results_to_csv(self):
         self.write_head_line()
@@ -157,7 +160,15 @@ class Simulation:
         with open(self.filename_csv, "a") as f:
             f.write(f"\n{data_line}")
 
-    def report_progress(self, message, community_number):
+    def report_progress(self, community_number):
         if community_number % (self.number_of_communities / 100) == 0:
             progress = int((community_number * 100) / self.number_of_communities)
-            print(f"{message}: {progress}%")
+            current_time_sec = time.time()
+            elapsed_time_sec = current_time_sec - self.start_time
+            estimated_total_time_sec = (elapsed_time_sec / progress) * 100
+            estimated_finish_time_sec = self.start_time + estimated_total_time_sec
+            estimated_finish_time_clock = time.ctime(estimated_finish_time_sec)
+            print(
+                f"Progress: {progress}%\n"
+                f"Estimated finish time: {estimated_finish_time_clock}"
+            )
