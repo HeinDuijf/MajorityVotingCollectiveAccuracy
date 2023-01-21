@@ -1,7 +1,7 @@
 import concurrent.futures as cf
-import multiprocessing
 import os
 import random as rd
+import shutil
 
 from community import Community
 from save_read_community import read_community_from_file, save_community_to_file
@@ -10,8 +10,8 @@ from save_read_community import read_community_from_file, save_community_to_file
 class Simulation:
     def __init__(
         self,
-        folder: str,
-        filename: str,
+        folder_communities: str,
+        filename_csv: str,
         number_of_communities: int,
         number_of_voting_simulations: int,
         number_of_nodes: int = 100,
@@ -22,8 +22,8 @@ class Simulation:
         number_of_elites_range=(25, 45),
         probability_homophilic_attachment_range=(0.5, 0.75),
     ):
-        self.filename = filename
-        self.folder = folder
+        self.filename_csv = f"{filename_csv}.csv"
+        self.folder_communities = folder_communities
         self.number_of_communities = number_of_communities
         self.number_of_voting_simulations = number_of_voting_simulations
         self.number_of_nodes = number_of_nodes
@@ -37,8 +37,12 @@ class Simulation:
         )
 
     def run(self):
-        os.makedirs(f"{self.folder}", exist_ok=True)
+        if os.path.exists(f"{self.folder_communities}"):
+            shutil.rmtree(f"{self.folder_communities}")
+        os.makedirs(f"{self.folder_communities}", exist_ok=True)
         self.write_readme()
+        if os.path.exists(f"{self.filename_csv}"):
+            os.remove(f"{self.filename_csv}")
         self.write_head_line()
         with cf.ProcessPoolExecutor() as executor:
             executor.map(self.single_run, range(self.number_of_communities))
@@ -49,7 +53,8 @@ class Simulation:
     def single_run(self, number: int):
         community = self.generate_community()
         save_community_to_file(
-            filename=f"{self.folder}/communities/{number}", community=community
+            filename=f"{self.folder_communities}/communities/{number}",
+            community=community,
         )
         self.simulate_and_write_data_line(community=community, number=number)
         progress_message = "Progress"
@@ -59,21 +64,23 @@ class Simulation:
         self.write_head_line()
         for community_number in range(self.number_of_communities):
             community = read_community_from_file(
-                f"{self.folder}/communities/{community_number}"
+                f"{self.folder_communities}/communities/{community_number}"
             )
-            self.simulate_and_write_data_line(community)
+            self.simulate_and_write_data_line(
+                community=community, number=community_number
+            )
             progress_message = "Progress voting simulations and saving results"
             self.report_progress(progress_message, community_number)
         print(
-            f"The simulation involving the communities in folder {self.folder} is a "
-            f"great success."
+            f"The simulation involving the communities in folder "
+            f"{self.folder_communities} is a great success."
         )
 
     def write_readme(self):
         information = (
             f"parameter, value\n"
-            f"filename, {self.filename}\n"
-            f"folder, {self.folder}\n"
+            f"filename, {self.filename_csv}\n"
+            f"folder, {self.folder_communities}\n"
             f"number_of_communities, {self.number_of_communities}\n"
             f"number_of_voting_simulations, {self.number_of_voting_simulations}\n"
             f"number_of_nodes, {self.number_of_nodes}\n"
@@ -86,7 +93,7 @@ class Simulation:
             f"probability_homophilic_attachment_range, "
             f"{self.probability_homophilic_attachment_range}"
         )
-        filename_readme = f"{self.folder}/README.csv"
+        filename_readme = f"{self.folder_communities}/README.csv"
         with open(filename_readme, "w") as f:
             f.write(information)
 
@@ -123,7 +130,7 @@ class Simulation:
             + "influence_minority_proportion,"
             + "homophily"
         )
-        with open(self.filename, "w") as f:
+        with open(self.filename_csv, "w") as f:
             f.write(head_line)
 
     def simulate_and_write_data_line(self, community: Community, number: int):
@@ -140,14 +147,14 @@ class Simulation:
         collective_accuracy = result["accuracy"]
         collective_accuracy_precision = result["precision"]
 
-        # Print results to line in csv folder
+        # Print results to line in csv folder_communities
         data_line = (
             f"{number}, {collective_accuracy}, {collective_accuracy_precision}, "
             f"{community.elite_competence}, {community.mass_competence}, "
             f"{community.number_of_elites}, {influence_minority_proportion}, "
             f"{community.probability_homophilic_attachment}"
         )
-        with open(self.filename, "a") as f:
+        with open(self.filename_csv, "a") as f:
             f.write(f"\n{data_line}")
 
     def report_progress(self, message, community_number):
