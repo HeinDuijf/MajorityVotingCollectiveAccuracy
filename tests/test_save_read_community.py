@@ -1,3 +1,5 @@
+import os
+
 from community import Community
 from save_read_community import (
     community_compress,
@@ -66,16 +68,6 @@ def test_community_unpack():
             ]
 
 
-# def test_edges_compress():
-#     edges = [(0, 1), (0, 2), (1, 2), (1, 9), (3, 10)]
-#     assert edges_compress(edges) == {0: [1, 2], 1: [2, 9], 3: [10]}
-#
-#
-# def test_edges_unpack():
-#     edges_dict = {0: [1, 2], 1: [2, 9], 3: [10]}
-#     assert edges_unpack(edges_dict) == [(0, 1), (0, 2), (1, 2), (1, 9), (3, 10)]
-
-
 def test_save_and_read():
     params: dict = {
         "number_of_nodes": 100,
@@ -106,3 +98,4 @@ def test_save_and_read():
     community2_edges = list(community_read.network.edges())
     for edge in community_edges:
         assert edge in community2_edges
+    os.remove("data/test_community.pickle")
