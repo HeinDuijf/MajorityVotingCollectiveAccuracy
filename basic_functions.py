@@ -32,5 +32,4 @@ def convert_math_to_text(string: str):
     }
     if len(words) == 1:
         return convert[words[0]]
-    else:
-        return [convert[word] for word in words]
+    return [convert[word] for word in words]
