@@ -1,7 +1,7 @@
 # Majority Voting
 
 ### WORK IN PROGRESS
-This project concerns some agent-based models and simulations of majority voting. The 
+This project concerns agent-based models and simulations of majority voting. The 
 main goal is to investigate under which conditions majority voting succeeds in 
 selecting the alternative that is in the best interest of the majority. 
 
@@ -11,8 +11,9 @@ selecting the alternative that is in the best interest of the majority.
 ```commandline
 python main.py
 ```
-which will create a csv file `data/clean.csv` and a collection of communities in the 
-folder `data/communities`.
+which will create a csv file `data/clean.csv`, a collection of communities in the 
+folder `data/communities`, and a README file with the parameter settings for the 
+simulation in `data/README.csv`.
 
 2. To generate the figures, run the script
 ```commandline
@@ -22,8 +23,11 @@ which will create a folder `new_figures` containing all the figures.
 
 3. To run the statistical analysis, run the script
 ```commandline
-todo
+python statistics.py
 ```
+which will create several csv files in the folder `stats` with the results of the 
+statistical 
+analysis.  
 
 ## Organization
 
@@ -46,7 +50,9 @@ figures. The folder `generate_figures` contains the scripts that generate
 figures. Each script in that folder is associated with one of the figures. 
 
 ### Statistical analysis
-todo
+The script `statistics.py` runs the statistical analysis that generates several csv 
+files in  the folder `stats`. The folder `stats` contains scripts that generate the 
+csv files. Each script in that folder is associated with one of the figures.  
 
 ## How to cite
 todo
