@@ -5,8 +5,7 @@ import shutil
 import time
 
 from community import Community
-from save_read_community import (read_community_from_file,
-                                 save_community_to_file)
+from save_read_community import save_community_to_file
 
 
 class Simulation:
@@ -41,12 +40,8 @@ class Simulation:
 
     def run(self):
         self.start_time = time.time()
-        if os.path.exists(f"{self.folder_communities}"):
-            shutil.rmtree(f"{self.folder_communities}")
-        os.makedirs(f"{self.folder_communities}", exist_ok=True)
+        self.initialize_dirs()
         self.write_readme()
-        if os.path.exists(f"{self.filename_csv}"):
-            os.remove(f"{self.filename_csv}")
         self.write_head_line()
         with cf.ProcessPoolExecutor() as executor:
             executor.map(self.single_run, range(self.number_of_communities))
@@ -63,21 +58,12 @@ class Simulation:
         self.simulate_and_write_data_line(community=community, number=number)
         self.report_progress(number)
 
-    def run_simulations_and_save_results_to_csv(self):
-        self.write_head_line()
-        for community_number in range(self.number_of_communities):
-            community = read_community_from_file(
-                f"{self.folder_communities}/communities/{community_number}"
-            )
-            self.simulate_and_write_data_line(
-                community=community, number=community_number
-            )
-            progress_message = "Progress voting simulations and saving results"
-            self.report_progress(progress_message, community_number)
-        print(
-            f"The simulation involving the communities in folder "
-            f"{self.folder_communities} is a great success."
-        )
+    def initialize_dirs(self):
+        if os.path.exists(f"{self.folder_communities}"):
+            shutil.rmtree(f"{self.folder_communities}")
+        os.makedirs(f"{self.folder_communities}", exist_ok=True)
+        if os.path.exists(f"{self.filename_csv}"):
+            os.remove(f"{self.filename_csv}")
 
     def write_readme(self):
         information = (
