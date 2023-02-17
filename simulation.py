@@ -39,6 +39,7 @@ class Simulation:
         )
 
     def run(self):
+        print(f"Started simulation at {time.ctime()}")
         self.start_time = time.time()
         self.initialize_dirs()
         self.write_readme()
@@ -147,7 +148,11 @@ class Simulation:
             f.write(f"\n{data_line}")
 
     def report_progress(self, community_number):
-        if community_number % (self.number_of_communities / 100) == 0:
+        stamps_percent = [1, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90]
+        stamps_numbers = [
+            (percent / 100) * self.number_of_communities for percent in stamps_percent
+        ]
+        if community_number in stamps_numbers:
             progress = int((community_number * 100) / self.number_of_communities)
             current_time_sec = time.time()
             elapsed_time_sec = current_time_sec - self.start_time
