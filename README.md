@@ -6,6 +6,11 @@ main goal is to investigate under which conditions majority voting succeeds in
 selecting the alternative that is in the best interest of the majority. 
 
 ## Setup
+0. To run the project, you first need to install the required packages
+
+```commandline
+pip install -r requirements.txt
+```
 1. To run the simulations and generate the data, run the script
 
 ```commandline
