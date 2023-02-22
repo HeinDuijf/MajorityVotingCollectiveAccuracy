@@ -1,6 +1,5 @@
 # Majority Voting
 
-### WORK IN PROGRESS
 This project concerns agent-based models and simulations of majority voting. The 
 main goal is to investigate under which conditions majority voting succeeds in 
 selecting the alternative that is in the best interest of the majority. 
