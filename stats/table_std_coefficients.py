@@ -38,7 +38,7 @@ def table_std_coefficients(data_file: str = "data/clean.csv", output_file: str =
         model_norm = sm.OLS(Y_norm, X_norm).fit()
         for row in rows:
             variable = convert_math_to_text(row)
-            table.loc[row, subdata_key] = round(model_norm.params[variable], 4)
+            table.loc[row, subdata_key] = round(model_norm.params[variable], 3)
 
     if not output_file:
         return table

@@ -38,7 +38,10 @@ def table_absolute_change(data_file: str = "data/clean.csv", output_file: str = 
             variable = convert_math_to_text(row)
             variable_coef = model.params[variable]
             variable_change = 0.05 / variable_coef
-            table.loc[row, subdata_type] = round(variable_change, 4)
+            if row == "E":
+                table.loc[row, subdata_type] = int(variable_change)
+            else:
+                table.loc[row, subdata_type] = round(variable_change, 3)
     if not output_file:
         return table
     else:
