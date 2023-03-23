@@ -88,5 +88,5 @@ def figure_accuracy_homophilic(
 
 if __name__ == "__main__":
     figure_accuracy_homophilic(
-        number_of_communities=10, number_of_voting_simulations=10
+        number_of_communities=200, number_of_voting_simulations=200
     )
