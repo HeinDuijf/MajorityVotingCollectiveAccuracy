@@ -5,8 +5,8 @@ if __name__ == "__main__":
     number_of_communities = 10 ** 5
     number_of_voting_simulations = 10 ** 5
     number_of_nodes = 10 ** 2
-    filename_csv = "/home/hduijf/data/volume_2/clean"
-    folder_communities = "/home/hduijf/data/volume_2/communities"
+    filename_csv = "/home/hduijf/data/volume_2/run/clean"
+    folder_communities = "/home/hduijf/data/volume_2/run/communities"
 
     Simulation(
         filename_csv=filename_csv,
