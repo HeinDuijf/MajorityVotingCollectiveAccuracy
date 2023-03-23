@@ -4,36 +4,31 @@ This project concerns agent-based models and simulations of majority voting. The
 main goal is to investigate under which conditions majority voting succeeds in 
 selecting the alternative that is in the best interest of the majority. 
 
-## Setup
+## 1. Setup
 0. To run the project, you first need to install the required packages
-
 ```commandline
 pip install -r requirements.txt
 ```
 1. To run the simulations and generate the data, run the script
-
 ```commandline
 python main.py
 ```
 which will create a csv file `data/clean.csv`, a collection of communities in the 
 folder `data/communities`, and a README file with the parameter settings for the 
 simulation in `data/README.csv`.
-
 2. To generate the figures, run the script
 ```commandline
 python figures.py
 ```
 which will create a folder `new_figures` containing all the figures. 
-
 3. To run the statistical analysis, run the script
 ```commandline
 python statistics.py
 ```
 which will create several csv files in the folder `stats` with the results of the 
-statistical 
-analysis.  
+statistical analysis.  
 
-## Organization
+## 2. Organization of the project
 
 ### The agent-based model: `Community`
 The central class `Community` is defined in `community.py`. A `Community` is an 
@@ -56,7 +51,26 @@ figures. Each script in that folder is associated with one of the figures.
 ### Statistical analysis
 The script `statistics.py` runs the statistical analysis that generates several csv 
 files in  the folder `stats`. The folder `stats` contains scripts that generate the 
-csv files. Each script in that folder is associated with one of the figures.  
+csv files. Each script in that folder is associated with one of the csv files.  
 
-## How to cite
-todo
+## 3. Runtime issues
+1. Runtime can be an issue for `Simulation.run()`. To run the simulation (with 
+parameters `number_of_communities = 10 ** 5` and
+`number_of_voting_simulations = 10 ** 5`), we used a virtual machine with 16 cores 
+and 64 GB RAM, which took approximately 5 days to finish. 
+
+2. Runtime can also be a minor issue for two scripts in the folder 
+`generate_figures`, which are also included in the script `figures.py`. We ran these 
+scripts on a basic laptop (2 cores 8 GB RAM). 
+   1. The script `figure_accuracy_homophily.py`) takes approximately 10 minutes 
+   (with parameters `number_of_communities=200` and `number_of_voting_simulations=200`). 
+   2. The script `figure_distribution_in_degree.py` takes approximately 20 minutes to 
+      finish (for 10**5 communities).
+
+## 4. How to cite
+To do
+
+## 5. Licence
+To do
+
+[//]: # (<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.)
