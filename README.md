@@ -68,4 +68,4 @@ scripts on a basic laptop (2 cores 8 GB RAM).
       finish (for 10**5 communities).
 
 ## 4. Licence and citation
-See about the repository or `LICENCE.md` and `CITATION.cff`.
+See `about` the repository or the files `LICENCE.md` and `CITATION.cff`.
