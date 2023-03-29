@@ -9,7 +9,12 @@ selecting the alternative that is in the best interest of the majority.
 ```commandline
 pip install -r requirements.txt
 ```
-1. To run the simulations and generate the data, run the script
+1. To get a feel for the agent-based model, you can check out the 
+   jupyter notebook, which includes using some network visualizations, by running
+```commandline
+jupyter-notebook NotebookWalkthrough.ipynb
+```
+2. To run the simulations and generate the data, run the script
 ```commandline
 python main.py
 ```
@@ -35,6 +40,11 @@ The central class `Community` is defined in `community.py`. A `Community` is an
 *agent-based model* consisting of a network of agents, and it can be used to compute 
 the estimated accuracy of a given community. The networks are generated with homophilic 
 and preferential attachment. 
+
+### Jupyter notebook: `NotebookWalkthrough.ipynb`
+The jupyter notebook walks you through the stages of the agent-based model 
+`Community` using some network visualizations. To minimalize the amount of code in the 
+notebook, some scripts are stored in `notebook.py`, which is ran in one of the initial notebook cells. 
 
 ### Simulations: `Simulation.run()`
 The central class `Simulation` and method `Simulation.run()` is defined in 
@@ -68,4 +78,5 @@ scripts on a basic laptop (2 cores 8 GB RAM).
       finish (for 10**5 communities).
 
 ## 4. Licence and citation
-See https://zenodo.org/record/7767125, or check out `about` the repository or the files `LICENCE.md` and `CITATION.cff`.
+See [DOI](https://doi.org/10.5281/zenodo.7767125) , or check out `about` the 
+Github repository or the files `LICENCE.md` and `CITATION.cff`.
