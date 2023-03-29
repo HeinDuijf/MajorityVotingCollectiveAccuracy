@@ -23,6 +23,7 @@ def figure_distribution_influence(
     histogram_plot(
         filename=filename,
         dataframe=df,
+        y="influence_minority_proportion",
         title="Distribution of the proportional\n influence of the minority",
         ylabel_left="number of occurrences",
         xlabel="proportional influence minority",

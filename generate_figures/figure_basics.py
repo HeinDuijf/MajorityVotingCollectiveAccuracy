@@ -12,6 +12,7 @@ line_plot_size = (14 * cm, 10.5 * cm)
 
 def histogram_plot(
     dataframe: pd.DataFrame,
+    y: str,
     title: str,
     xlabel: str,
     ylabel_left: str,
@@ -27,10 +28,7 @@ def histogram_plot(
     # Plot histogram
     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=histogram_size)
     ax.hist(
-        dataframe["influence_minority_proportion"],
-        bins=30,
-        color="white",
-        edgecolor="gray",
+        dataframe[y], bins=30, color="white", edgecolor="gray",
     )
     ax_cumulative = ax.twinx()
     ax.set(
@@ -40,9 +38,7 @@ def histogram_plot(
     ax.tick_params(axis="y", colors="gray")
 
     # Cumulative line plot
-    y_values, x_values = np.histogram(
-        dataframe["influence_minority_proportion"], bins=30, range=xlim
-    )
+    y_values, x_values = np.histogram(dataframe[y], bins=30, range=xlim)
     y_values = np.cumsum(y_values)
     y_values = 1 / np.max(y_values) * y_values
     x_values = x_values[:-1]
@@ -50,8 +46,8 @@ def histogram_plot(
     ax_cumulative.set(ylabel=ylabel_right, ylim=ylim)
 
     # Mean and standard deviation
-    data_mean = dataframe["influence_minority_proportion"].mean()
-    data_std = dataframe["influence_minority_proportion"].std()
+    data_mean = dataframe[y].mean()
+    data_std = dataframe[y].std()
     plt.axvline(data_mean, color="black", linestyle="dashed")
     plt.axvline(data_mean + data_std, color="black", linestyle="dotted")
     plt.axvline(data_mean - data_std, color="black", linestyle="dotted")

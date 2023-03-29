@@ -22,6 +22,7 @@ def figure_distribution_accuracy(
     histogram_plot(
         filename=filename,
         dataframe=df,
+        y="collective_accuracy",
         title="Distribution of collective accuracy",
         ylabel_left="number of occurrences",
         xlabel="collective accuracy",
