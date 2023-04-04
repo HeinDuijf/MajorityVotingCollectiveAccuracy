@@ -14,6 +14,8 @@ pip install -r requirements.txt
 ```commandline
 jupyter-notebook NotebookWalkthrough.ipynb
 ```
+which will create several html files in the folder `notebook` with visualizations of 
+agent-based models.
 2. To run the simulations and generate the data, run the script
 ```commandline
 python main.py
