@@ -9,13 +9,14 @@ selecting the alternative that is in the best interest of the majority.
 ```commandline
 pip install -r requirements.txt
 ```
-1. To get a feel for the agent-based model, you can check out the 
-   jupyter notebook, which includes using some network visualizations, by running
+1. To get a feel for the agent-based model, you can check out the
+   jupyter notebook, which includes using some network visualizations, by either 
+   opening the html file `NotebookWalkthrough.html` or by running
 ```commandline
 jupyter-notebook NotebookWalkthrough.ipynb
 ```
-which will create several html files in the folder `notebook` with visualizations of 
-agent-based models.
+Running the notebook will create several html files in the folder `notebook` with 
+visualizations of agent-based models.
 2. To run the simulations and generate the data, run the script
 ```commandline
 python main.py
