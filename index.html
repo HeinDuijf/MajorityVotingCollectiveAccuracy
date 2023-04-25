@@ -1,6 +1,11 @@
-<!DOCTYPE html>
+None<!DOCTYPE html>
 <html>
-<head><meta charset="utf-8" />
+<head><style type="text/css">
+        div.output_subarea {
+            max-width: 100% !important;
+        }
+    </style>
+    <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>NotebookWalkthrough</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
@@ -14622,7 +14627,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[1]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">run</span> notebook.py
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">run</span> scripts/notebook.py
 </pre></div>
 
      </div>
@@ -14683,7 +14688,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
     <span class="n">probability_homophilic_attachment</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">community_simple</span><span class="o">.</span><span class="n">update_votes</span><span class="p">()</span>
-<span class="n">visualize</span><span class="p">(</span><span class="n">community_simple</span><span class="p">,</span> <span class="n">color_type</span><span class="o">=</span><span class="s2">&quot;type&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="s2">&quot;notebook/community_simple_initial.html&quot;</span><span class="p">)</span>
+<span class="n">visualize</span><span class="p">(</span><span class="n">community_simple</span><span class="p">,</span> <span class="n">color_type</span><span class="o">=</span><span class="s2">&quot;type&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="s2">&quot;www/community_simple_initial.html&quot;</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -14698,39 +14703,35 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 <div class="jp-OutputArea jp-Cell-outputArea">
 
-<div class="jp-OutputArea-child">
-
+    <div class="output_area">
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>notebook/community_simple_initial.html
+        <div class="prompt"></div>
+        
+    <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>www/community_simple_initial.html
 </pre>
-</div>
-</div>
+</div> </div>
 
-<div class="jp-OutputArea-child">
-
+    <div class="output_area">
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[2]:</div>
-
-
-
+        <div class="prompt output_prompt">Out[2]:</div>
+        
+    
+        
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
 
         <iframe
             width="100%"
             height="500px"
-            src="notebook/community_simple_initial.html"
+            src="www/community_simple_initial.html"
             frameborder="0"
             allowfullscreen
             
         ></iframe>
         
 </div>
-
-</div>
+ 
+         </div>
 
 </div>
 
@@ -14758,7 +14759,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">visualize</span><span class="p">(</span><span class="n">com</span><span class="o">=</span><span class="n">community_simple</span><span class="p">,</span> <span class="n">color_type</span><span class="o">=</span><span class="s2">&quot;opinion&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="s2">&quot;notebook/community_simple_opinions.html&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">visualize</span><span class="p">(</span><span class="n">com</span><span class="o">=</span><span class="n">community_simple</span><span class="p">,</span> <span class="n">color_type</span><span class="o">=</span><span class="s2">&quot;opinion&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="s2">&quot;www/community_simple_opinions.html&quot;</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -14773,39 +14774,35 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 <div class="jp-OutputArea jp-Cell-outputArea">
 
-<div class="jp-OutputArea-child">
-
+    <div class="output_area">
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>notebook/community_simple_opinions.html
+        <div class="prompt"></div>
+        
+    <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>www/community_simple_opinions.html
 </pre>
-</div>
-</div>
+</div> </div>
 
-<div class="jp-OutputArea-child">
-
+    <div class="output_area">
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[3]:</div>
-
-
-
+        <div class="prompt output_prompt">Out[3]:</div>
+        
+    
+        
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
 
         <iframe
             width="100%"
             height="500px"
-            src="notebook/community_simple_opinions.html"
+            src="www/community_simple_opinions.html"
             frameborder="0"
             allowfullscreen
             
         ></iframe>
         
 </div>
-
-</div>
+ 
+         </div>
 
 </div>
 
@@ -14832,7 +14829,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">visualize</span><span class="p">(</span><span class="n">com</span><span class="o">=</span><span class="n">community_simple</span><span class="p">,</span> <span class="n">color_type</span><span class="o">=</span><span class="s2">&quot;vote&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="s2">&quot;notebook/community_simple_votes.html&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">visualize</span><span class="p">(</span><span class="n">com</span><span class="o">=</span><span class="n">community_simple</span><span class="p">,</span> <span class="n">color_type</span><span class="o">=</span><span class="s2">&quot;vote&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="s2">&quot;www/community_simple_votes.html&quot;</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -14847,39 +14844,35 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 <div class="jp-OutputArea jp-Cell-outputArea">
 
-<div class="jp-OutputArea-child">
-
+    <div class="output_area">
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>notebook/community_simple_votes.html
+        <div class="prompt"></div>
+        
+    <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>www/community_simple_votes.html
 </pre>
-</div>
-</div>
+</div> </div>
 
-<div class="jp-OutputArea-child">
-
+    <div class="output_area">
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[4]:</div>
-
-
-
+        <div class="prompt output_prompt">Out[4]:</div>
+        
+    
+        
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
 
         <iframe
             width="100%"
             height="500px"
-            src="notebook/community_simple_votes.html"
+            src="www/community_simple_votes.html"
             frameborder="0"
             allowfullscreen
             
         ></iframe>
         
 </div>
-
-</div>
+ 
+         </div>
 
 </div>
 
@@ -14924,17 +14917,14 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 <div class="jp-OutputArea jp-Cell-outputArea">
 
-<div class="jp-OutputArea-child">
-
+    <div class="output_area">
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Elites: 14 | Masses: 6
+        <div class="prompt"></div>
+        
+    <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Elites: 12 | Masses: 8
 </pre>
-</div>
-</div>
+</div> </div>
 
 </div>
 
@@ -14985,7 +14975,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
     <span class="n">probability_homophilic_attachment</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">community</span><span class="o">.</span><span class="n">update_votes</span><span class="p">()</span>
-<span class="n">visualize</span><span class="p">(</span><span class="n">community</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="s2">&quot;notebook/community_complex_initial.html&quot;</span><span class="p">)</span>
+<span class="n">visualize</span><span class="p">(</span><span class="n">community</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="s2">&quot;www/community_complex_initial.html&quot;</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -15000,39 +14990,35 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 <div class="jp-OutputArea jp-Cell-outputArea">
 
-<div class="jp-OutputArea-child">
-
+    <div class="output_area">
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>notebook/community_complex_initial.html
+        <div class="prompt"></div>
+        
+    <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>www/community_complex_initial.html
 </pre>
-</div>
-</div>
+</div> </div>
 
-<div class="jp-OutputArea-child">
-
+    <div class="output_area">
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[6]:</div>
-
-
-
+        <div class="prompt output_prompt">Out[6]:</div>
+        
+    
+        
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
 
         <iframe
             width="100%"
             height="500px"
-            src="notebook/community_complex_initial.html"
+            src="www/community_complex_initial.html"
             frameborder="0"
             allowfullscreen
             
         ></iframe>
         
 </div>
-
-</div>
+ 
+         </div>
 
 </div>
 
@@ -15075,17 +15061,14 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 <div class="jp-OutputArea jp-Cell-outputArea">
 
-<div class="jp-OutputArea-child">
-
+    <div class="output_area">
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Node 27 has the most influence: they influence 32 others!
+        <div class="prompt"></div>
+        
+    <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Node 54 has the most influence: they influence 33 others!
 </pre>
-</div>
-</div>
+</div> </div>
 
 </div>
 
@@ -15113,7 +15096,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">visualize</span><span class="p">(</span><span class="n">com</span><span class="o">=</span><span class="n">community</span><span class="p">,</span> <span class="n">color_type</span><span class="o">=</span><span class="s2">&quot;opinion&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="s2">&quot;notebook/community_complex_opinions.html&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">visualize</span><span class="p">(</span><span class="n">com</span><span class="o">=</span><span class="n">community</span><span class="p">,</span> <span class="n">color_type</span><span class="o">=</span><span class="s2">&quot;opinion&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="s2">&quot;www/community_complex_opinions.html&quot;</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -15128,39 +15111,35 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 <div class="jp-OutputArea jp-Cell-outputArea">
 
-<div class="jp-OutputArea-child">
-
+    <div class="output_area">
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>notebook/community_complex_opinions.html
+        <div class="prompt"></div>
+        
+    <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>www/community_complex_opinions.html
 </pre>
-</div>
-</div>
+</div> </div>
 
-<div class="jp-OutputArea-child">
-
+    <div class="output_area">
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[8]:</div>
-
-
-
+        <div class="prompt output_prompt">Out[8]:</div>
+        
+    
+        
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
 
         <iframe
             width="100%"
             height="500px"
-            src="notebook/community_complex_opinions.html"
+            src="www/community_complex_opinions.html"
             frameborder="0"
             allowfullscreen
             
         ></iframe>
         
 </div>
-
-</div>
+ 
+         </div>
 
 </div>
 
@@ -15205,17 +15184,14 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 <div class="jp-OutputArea jp-Cell-outputArea">
 
-<div class="jp-OutputArea-child">
-
+    <div class="output_area">
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Opinions: Elites: 55 | Masses: 45
+        <div class="prompt"></div>
+        
+    <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Opinions: Elites: 64 | Masses: 36
 </pre>
-</div>
-</div>
+</div> </div>
 
 </div>
 
@@ -15242,7 +15218,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">visualize</span><span class="p">(</span><span class="n">com</span><span class="o">=</span><span class="n">community</span><span class="p">,</span> <span class="n">color_type</span><span class="o">=</span><span class="s2">&quot;vote&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="s2">&quot;notebook/community_complex_votes.html&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">visualize</span><span class="p">(</span><span class="n">com</span><span class="o">=</span><span class="n">community</span><span class="p">,</span> <span class="n">color_type</span><span class="o">=</span><span class="s2">&quot;vote&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="s2">&quot;www/community_complex_votes.html&quot;</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -15257,39 +15233,35 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 <div class="jp-OutputArea jp-Cell-outputArea">
 
-<div class="jp-OutputArea-child">
-
+    <div class="output_area">
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>notebook/community_complex_votes.html
+        <div class="prompt"></div>
+        
+    <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>www/community_complex_votes.html
 </pre>
-</div>
-</div>
+</div> </div>
 
-<div class="jp-OutputArea-child">
-
+    <div class="output_area">
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[10]:</div>
-
-
-
+        <div class="prompt output_prompt">Out[10]:</div>
+        
+    
+        
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
 
         <iframe
             width="100%"
             height="500px"
-            src="notebook/community_complex_votes.html"
+            src="www/community_complex_votes.html"
             frameborder="0"
             allowfullscreen
             
         ></iframe>
         
 </div>
-
-</div>
+ 
+         </div>
 
 </div>
 
@@ -15334,17 +15306,14 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 <div class="jp-OutputArea jp-Cell-outputArea">
 
-<div class="jp-OutputArea-child">
-
+    <div class="output_area">
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Votes: Elites: 77 | Masses: 23
+        <div class="prompt"></div>
+        
+    <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Votes: Elites: 74 | Masses: 26
 </pre>
-</div>
-</div>
+</div> </div>
 
 </div>
 
@@ -15387,19 +15356,16 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 <div class="jp-OutputArea jp-Cell-outputArea">
 
-<div class="jp-OutputArea-child">
-
+    <div class="output_area">
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+        <div class="prompt"></div>
+        
+    <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>Initial distribution: Elites: 30 | Masses: 70
-Opinion distribution: Elites: 55 | Masses: 45
-Votes distribition: Elites: 77 | Masses: 23
+Opinion distribution: Elites: 64 | Masses: 36
+Votes distribition: Elites: 74 | Masses: 26
 </pre>
-</div>
-</div>
+</div> </div>
 
 </div>
 
