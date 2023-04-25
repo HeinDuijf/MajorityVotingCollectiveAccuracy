@@ -3,8 +3,8 @@ import math
 import numpy as np
 import pandas as pd
 import statsmodels.api as sm
-from basic_functions import convert_math_to_text
 from scipy import stats
+from scripts.basic_functions import convert_math_to_text
 
 
 def table_all_regressions(data_file: str = "data/clean.csv", output_file: str = None):

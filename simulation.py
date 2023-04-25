@@ -5,7 +5,7 @@ import shutil
 import time
 
 from community import Community
-from save_read_community import save_community_to_file
+from scripts.save_read_community import save_community_to_file
 
 
 class Simulation:

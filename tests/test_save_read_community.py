@@ -1,7 +1,7 @@
 import os
 
 from community import Community
-from save_read_community import (
+from scripts.save_read_community import (
     community_compress,
     community_unpack,
     read_community_from_file,

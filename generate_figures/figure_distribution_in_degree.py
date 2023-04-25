@@ -3,7 +3,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from save_read_community import read_community_from_file
+from scripts.save_read_community import read_community_from_file
 
 cm = 1 / 2.54  # variable used to convert inches to cm
 

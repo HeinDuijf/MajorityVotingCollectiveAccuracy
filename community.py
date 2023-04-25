@@ -4,8 +4,8 @@ import networkx as nx
 import numpy as np
 from statsmodels.stats.proportion import proportion_confint
 
-import config as cfg
-from basic_functions import majority_winner
+from scripts import config as cfg
+from scripts.basic_functions import majority_winner
 
 
 class Community:

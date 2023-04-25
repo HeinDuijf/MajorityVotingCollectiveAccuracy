@@ -1,6 +1,6 @@
-import config as cfg
 import networkx as nx
 from community import Community
+from scripts import config as cfg
 
 community_blank = Community(0, 0, 0, 0, 0, 0,)
 community_without_hom: Community = community_blank

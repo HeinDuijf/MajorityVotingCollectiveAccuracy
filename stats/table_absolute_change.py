@@ -1,6 +1,6 @@
 import pandas as pd
 import statsmodels.api as sm
-from basic_functions import convert_math_to_text
+from scripts.basic_functions import convert_math_to_text
 
 
 def table_absolute_change(data_file: str = "data/clean.csv", output_file: str = None):
