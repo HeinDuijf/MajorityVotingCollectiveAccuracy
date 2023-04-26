@@ -1,6 +1,6 @@
 # Majority Voting and Collective Accuracy
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7767125.svg)](https://doi.org/10.5281/zenodo.7767125)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7767124.svg)](https://doi.org/10.5281/zenodo.7767124)
 
 This repository is associated with the paper titled "Is majority voting in the best 
 interest of the majority?" (under review). The paper investigates the 
@@ -109,6 +109,6 @@ This repository accompanies an academic paper (under review). In the meantime,
 please cite as follows:
 
 Cite the code: 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7767125.svg)](https://doi.org/10.5281/zenodo.7767125)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7767124.svg)](https://doi.org/10.5281/zenodo.7767124)
 
 Released under the [MIT licence](LICENCE.md).
