@@ -4,7 +4,7 @@ authors:
 - family-names: "Duijf"
   given-names: "Hein"
   orcid: "https://orcid.org/0000-0001-6936-306X"
-title: "MajorityVoting"
+title: "An agent-based model and simulations of majority voting and collective accuracy"
 version: 1.0.0
 doi: 10.5281/zenodo.7767125
 date-released: 2023-03-24
