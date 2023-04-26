@@ -1,12 +1,11 @@
-# Majority Voting
+# Majority Voting and Collective Accuracy
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7767125.svg)](https://doi.org/10.5281/zenodo.7767125)
 
-Majority voting plays a central role in democratic institutions. I investigate the 
+This repository is associated with the paper titled "Is majority voting in the best 
+interest of the majority?" (under review). The paper investigates the 
 collective accuracy of majority voting: which refers to the probability that it succeeds 
-in selecting the alternative that is in the best interest of the majority. It would be 
-surprising if majority voting in a community would not succeed in selecting policies 
-that are in the best interest of the majority. 
+in selecting the alternative that is in the best interest of the majority. 
 I use an agent-based model to explore the impact of imperfect competence and social 
 influence on majority voting. The agents are placed on influence networks that are 
 generated in a natural way, without the assumption that powerful minorities manipulate 
@@ -109,8 +108,7 @@ scripts on a basic laptop (2 cores 8 GB RAM).
 This repository accompanies an academic paper (under review). In the meantime, 
 please cite as follows:
 
-[How to cite](CITATION.cff):
-- Duijf, H. (2023). MajorityVoting (Version 1.0.0) [Computer software]. 
-https://doi.org/10.5281/zenodo.7767125
+Cite the code: 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7767125.svg)](https://doi.org/10.5281/zenodo.7767125)
 
 Released under the [MIT licence](LICENCE.md).
