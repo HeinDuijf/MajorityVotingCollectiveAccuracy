@@ -19,7 +19,7 @@ This repository contains the code for the agent-based model and simulations, for
 producing some figures, and for the statistical analysis. To get a feel for the 
 agent-based model, click the picture below:
 
-[![A picture of an example of an agent-based model](/www/agent-based-model.png  "An example of an agent-based model")](https://heinduijf.github.io/MajorityVoting/)
+[![A picture of an example of an agent-based model](/www/agent-based-model.png  "An example of an agent-based model")](https://heinduijf.github.io/MajorityVotingCollectiveAccuracy/)
 
 ## 1. Setup
 To run the project, you first need to install the required packages
@@ -31,7 +31,7 @@ pip install -r requirements.txt
 1. To get a feel for the agent-based model, you can check out the
 [jupyter notebook](NotebookWalkthrough.ipynb), which includes some network 
 visualizations, by either opening the 
-[pages](https://heinduijf.github.io/MajorityVoting/) or by running
+[pages](https://heinduijf.github.io/MajorityVotingCollectiveAccuracy/) or by running
 ```commandline
 jupyter-notebook NotebookWalkthrough.ipynb
 ```
