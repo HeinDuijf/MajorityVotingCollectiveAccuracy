@@ -1,6 +1,6 @@
 import random as rd
 
-import config as cfg
+import scripts.config as cfg
 
 
 def majority_winner(values: list):
