@@ -112,13 +112,15 @@ class Simulation:
     def write_head_line(self):
         head_line = (
             "community_number,"
-            + "collective_accuracy,"
-            + "collective_accuracy_precision,"
             + "minority_competence,"
             + "majority_competence,"
             + "number_of_minority,"
             + "influence_minority_proportion,"
-            + "homophily"
+            + "homophily,"
+            + "collective_accuracy,"
+            + "collective_accuracy_precision,"
+            + "collective_accuracy_pre_influence,"
+            + "collective_accuracy_precision_pre_influence,"
         )
         with open(self.filename_csv, "w") as f:
             f.write(head_line)
@@ -131,18 +133,19 @@ class Simulation:
             total_influence_minority + total_influence_majority
         )
         # Run voting simulations to estimate accuracy
-        result = community.estimated_community_accuracy(
-            self.number_of_voting_simulations
-        )
-        collective_accuracy = result["accuracy"]
-        collective_accuracy_precision = result["precision"]
+        result = community.voting_simulation(self.number_of_voting_simulations)
+        collective_accuracy = result["accuracy_vote"]
+        collective_accuracy_precision = result["precision_vote"]
+        collective_accuracy_pre_influence = result["accuracy_pre_influence"]
+        collective_accuracy_precision_pre_influence = result["precision_pre_influence"]
 
         # Print results to line in csv folder_communities
         data_line = (
-            f"{number}, {collective_accuracy}, {collective_accuracy_precision}, "
-            f"{community.elite_competence}, {community.mass_competence}, "
-            f"{community.number_of_elites}, {influence_minority_proportion}, "
-            f"{community.probability_homophilic_attachment}"
+            f"{number},{community.elite_competence},{community.mass_competence},"
+            f"{community.number_of_elites},{influence_minority_proportion},"
+            f"{community.probability_homophilic_attachment},{collective_accuracy},"
+            f"{collective_accuracy_precision},{collective_accuracy_pre_influence},"
+            f"{collective_accuracy_precision_pre_influence}"
         )
         with open(self.filename_csv, "a") as f:
             f.write(f"\n{data_line}")
