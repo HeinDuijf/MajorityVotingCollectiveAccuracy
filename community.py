@@ -175,32 +175,64 @@ class Community:
     def total_influence_mass(self):
         return len(self.network.edges()) - self.total_influence_elites()
 
-    def estimated_community_accuracy(
-        self, number_of_voting_simulations: int, alpha: float = 0.05
-    ):
-        """ Method for estimating the collective accuracy of the community.
+    def voting_simulation(self, number_of_voting_simulations: int, alpha: float = 0.05):
+        """ Method for voting simulation.
         :param number_of_voting_simulations
             Number of simulations to estimate the collective accuracy
         :param alpha:
             p-value for confidence interval.
         :returns result: dict
-            result["accuracy"]: estimated collective accuracy,
-            result["precision"]: the confidence interval associated with p-value
+            result["accuracy_vote"]: estimated collective accuracy,
+            result["precision_vote"]: the confidence interval associated with p-value
             alpha
+            result["accuracy_pre_influence"]: estimated collective accuracy
+            pre influence,
+            result["precision_pre_influence"]: the confidence interval associated with
+            pre influence
         """
-        vote_outcomes = [self.vote() for _ in range(number_of_voting_simulations)]
-        number_of_success = len(
-            [outcome for outcome in vote_outcomes if outcome == cfg.vote_for_mass]
+        opinion_outcomes = []
+        vote_outcomes = []
+        for _ in range(number_of_voting_simulations):
+            outcome = self.vote_and_opinion()
+            vote_outcomes.append(outcome[0])
+            opinion_outcomes.append(outcome[1])
+        result_vote = self.calculate_accuracy_and_precision(vote_outcomes, alpha=alpha)
+        result_opinion = self.calculate_accuracy_and_precision(
+            opinion_outcomes, alpha=alpha
         )
-        estimated_accuracy = number_of_success / number_of_voting_simulations
+        result = {
+            "accuracy_vote": result_vote["accuracy"],
+            "precision_vote": result_vote["precision"],
+            "accuracy_pre_influence": result_opinion["accuracy"],
+            "precision_pre_influence": result_opinion["precision"],
+        }
+        return result
+
+    @staticmethod
+    def calculate_accuracy_and_precision(list_of_items, alpha: float = 0.05):
+        number_of_items = len(list_of_items)
+        number_of_success = len(
+            [outcome for outcome in list_of_items if outcome == cfg.vote_for_mass]
+        )
+        estimated_accuracy = number_of_success / number_of_items
         confidence_interval = proportion_confint(
-            number_of_success, number_of_voting_simulations, alpha=alpha
+            number_of_success, number_of_items, alpha=alpha
         )
         result = {
             "accuracy": estimated_accuracy,
             "precision": max(confidence_interval) - min(confidence_interval),
         }
         return result
+
+    def vote_and_opinion(self):
+        self.update_votes()
+        list_of_opinions = [self.network.nodes[node]["opinion"] for node in self.nodes]
+        list_of_votes = [self.network.nodes[node]["vote"] for node in self.nodes]
+        output: list = [
+            majority_winner(list_of_votes),
+            majority_winner(list_of_opinions),
+        ]
+        return output
 
     def vote(self):
         self.update_votes()
