@@ -5,6 +5,5 @@ archive
 tests/.pytest_cache
 notes.md
 data/communities
-majority_voting.py
 __pycache__
 .vscode
