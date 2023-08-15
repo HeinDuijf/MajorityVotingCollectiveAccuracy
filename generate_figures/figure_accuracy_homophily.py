@@ -54,7 +54,7 @@ def figure_accuracy_homophilic(
                     mass_competence=c,
                     probability_homophilic_attachment=h,
                 )
-                result = community.estimated_community_accuracy(
+                result = community.voting_simulation(
                     number_of_voting_simulations=number_of_voting_simulations
                 )
                 e = result["accuracy"]
