@@ -90,9 +90,11 @@ class Simulation:
     def generate_community(self):
         elite_competence: float = rd.uniform(*self.elite_competence_range)
         mass_competence: float = rd.uniform(*self.mass_competence_range)
-        probability_homophilic_attachment: float = rd.uniform(
-            *self.probability_homophilic_attachment_range
-        )
+        probability_homophilic_attachment = None
+        if self.probability_homophilic_attachment_range is not None:
+            probability_homophilic_attachment = rd.uniform(
+                *self.probability_homophilic_attachment_range
+            )
         number_of_elites: int = rd.randint(*self.number_of_elites_range)
 
         # 1. Generate community with these parameters
