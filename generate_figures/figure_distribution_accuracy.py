@@ -27,7 +27,7 @@ def figure_distribution_accuracy(
         ylabel_left="number of occurrences",
         xlabel="collective accuracy",
         xlim=(0, 1),
-        xticks=0.1 * np.arange(0, 10, 1, dtype=int),
+        xticks=0.1 * np.arange(0, 11, 1, dtype=int),
         ylabel_right="cumulative probability",
         ylim=(0, 1),
     )
