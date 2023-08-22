@@ -185,26 +185,47 @@ class Community:
             result["accuracy_vote"]: estimated collective accuracy,
             result["precision_vote"]: the confidence interval associated with p-value
             alpha
+            result["mean"
             result["accuracy_pre_influence"]: estimated collective accuracy
             pre influence,
             result["precision_pre_influence"]: the confidence interval associated with
             pre influence
         """
-        opinion_outcomes = []
-        vote_outcomes = []
+        vote_winners = []
+        votes = []
+        opinion_winners = []
+        opinions = []
         for _ in range(number_of_voting_simulations):
             outcome = self.vote_and_opinion()
-            vote_outcomes.append(outcome[0])
-            opinion_outcomes.append(outcome[1])
-        result_vote = self.calculate_accuracy_and_precision(vote_outcomes, alpha=alpha)
-        result_opinion = self.calculate_accuracy_and_precision(
-            opinion_outcomes, alpha=alpha
+            vote_winners.append(outcome["vote_winner"])
+            votes.append(outcome["vote"])
+            opinion_winners.append(["opinion_winner"])
+            opinions.append(outcome["opinion"])
+
+        result_vote_winners = self.calculate_accuracy_and_precision(
+            vote_winners, alpha=alpha
         )
+        result_opinion_winners = self.calculate_accuracy_and_precision(
+            opinion_winners, alpha=alpha
+        )
+        mean = np.mean(votes)
+        median = np.median(votes)
+        std = np.std(votes)
+        mean_pre_influence = np.mean(opinions)
+        median_pre_influence = np.median(opinions)
+        std_pre_influence = np.std(opinions)
+
         result = {
-            "accuracy_vote": result_vote["accuracy"],
-            "precision_vote": result_vote["precision"],
-            "accuracy_pre_influence": result_opinion["accuracy"],
-            "precision_pre_influence": result_opinion["precision"],
+            "accuracy": result_vote_winners["accuracy"],
+            "precision": result_vote_winners["precision"],
+            "accuracy_pre_influence": result_opinion_winners["accuracy"],
+            "precision_pre_influence": result_opinion_winners["precision"],
+            "mean": mean,
+            "median": median,
+            "std": std,
+            "mean_pre_influence": mean_pre_influence,
+            "median_pre_influence": median_pre_influence,
+            "std_pre_influence": std_pre_influence,
         }
         return result
 
@@ -228,10 +249,14 @@ class Community:
         self.update_votes()
         list_of_opinions = [self.network.nodes[node]["opinion"] for node in self.nodes]
         list_of_votes = [self.network.nodes[node]["vote"] for node in self.nodes]
-        output: list = [
-            majority_winner(list_of_votes),
-            majority_winner(list_of_opinions),
-        ]
+        output: dict = {
+            "vote_winner": majority_winner(list_of_votes),
+            "vote": sum([vote == cfg.vote_for_mass for vote in list_of_votes]),
+            "opinion_winner": majority_winner(list_of_opinions),
+            "opinion": sum(
+                [opinion == cfg.vote_for_mass for opinion in list_of_opinions]
+            ),
+        }
         return output
 
     def vote(self):

@@ -46,6 +46,11 @@ class Simulation:
         self.write_head_line()
         with cf.ProcessPoolExecutor() as executor:
             executor.map(self.single_run, range(self.number_of_communities))
+        combine_community_files(
+            directory_path=f"{self.folder_communities}/communities",
+            output_file=f"{self.folder_communities}/communities.pickle",
+            delete_directory=False,
+        )
         # for community_number in range(self.number_of_communities):
         #     self.single_run(number=community_number)
         print("The simulation is a great success.")
@@ -57,9 +62,6 @@ class Simulation:
             community=community,
         )
         self.simulate_and_write_data_line(community=community, number=number)
-        combine_community_files(
-            self.folder_communities, f"{self.folder_communities}/communities.pickle"
-        )
         self.report_progress(number)
 
     def initialize_dirs(self):
@@ -126,6 +128,12 @@ class Simulation:
             + "collective_accuracy_precision,"
             + "collective_accuracy_pre_influence,"
             + "collective_accuracy_precision_pre_influence,"
+            + "mean,"
+            + "median,"
+            + "std,"
+            + "mean_pre_influence,"
+            + "median_pre_influence,"
+            + "std_pre_influence"
         )
         with open(self.filename_csv, "w") as f:
             f.write(head_line)
@@ -139,18 +147,25 @@ class Simulation:
         )
         # Run voting simulations to estimate accuracy
         result = community.voting_simulation(self.number_of_voting_simulations)
-        collective_accuracy = result["accuracy_vote"]
-        collective_accuracy_precision = result["precision_vote"]
-        collective_accuracy_pre_influence = result["accuracy_pre_influence"]
-        collective_accuracy_precision_pre_influence = result["precision_pre_influence"]
+        accuracy = result["accuracy"]
+        accuracy_precision = result["precision"]
+        accuracy_pre_influence = result["accuracy_pre_influence"]
+        accuracy_precision_pre_influence = result["precision_pre_influence"]
+        mean = result["mean"]
+        median = result["median"]
+        std = result["std"]
+        mean_pre_influence = result["mean_pre_influence"]
+        median_pre_influence = result["median_pre_influence"]
+        std_pre_influence = result["std_pre_influence"]
 
         # Print results to line in csv folder_communities
         data_line = (
             f"{number},{community.elite_competence},{community.mass_competence},"
             f"{community.number_of_elites},{influence_minority_proportion},"
-            f"{community.probability_homophilic_attachment},{collective_accuracy},"
-            f"{collective_accuracy_precision},{collective_accuracy_pre_influence},"
-            f"{collective_accuracy_precision_pre_influence}"
+            f"{community.probability_homophilic_attachment},{accuracy},"
+            f"{accuracy_precision},{accuracy_pre_influence},"
+            f"{accuracy_precision_pre_influence},{mean},{median},{std},"
+            f"{mean_pre_influence},{median_pre_influence},{std_pre_influence}"
         )
         with open(self.filename_csv, "a") as f:
             f.write(f"\n{data_line}")
