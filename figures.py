@@ -11,6 +11,7 @@ from generate_figures.figure_epistemic_accuracy import figure_epistemic_accuracy
 
 if __name__ == "__main__":
     folder_name = "new_figures"
+    data_file = "data/clean.csv"
     os.makedirs(folder_name, exist_ok=True)
 
     # figure_accuracy_homophilic(
@@ -20,16 +21,14 @@ if __name__ == "__main__":
     # )
     figure_distribution_accuracy_pre_influence(
         filename=f"{folder_name}/figure_distribution_accuracy_pre_influence",
-        data_file="data/clean.csv",
+        data_file=data_file,
     )
 
     figure_distribution_influence(
-        filename=f"{folder_name}/figure_distribution_influence",
-        data_file="data/clean.csv",
+        filename=f"{folder_name}/figure_distribution_influence", data_file=data_file,
     )
     figure_distribution_accuracy(
-        filename=f"{folder_name}/figure_distribution_accuracy",
-        data_file="data/clean.csv",
+        filename=f"{folder_name}/figure_distribution_accuracy", data_file=data_file,
     )
     figure_epistemic_accuracy(
         filename=f"{folder_name}/figure_epistemic_accuracy", scale=4
