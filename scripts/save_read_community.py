@@ -24,6 +24,17 @@ def community_compress(community: Community):
     return community_dict
 
 
+def combine_community_files(directory_path, output_file):
+    result = []
+    for d in os.listdir(directory_path):
+        if d.endswith(".pickle"):
+            with open(os.path.join(directory_path, d), "rb") as f:
+                content = pickle.load(f)
+            result.append(content)
+    with open(output_file, "wb") as out:
+        pickle.dump(result, out)
+
+
 def community_unpack(community_compressed: dict):
     nodes = [
         node
@@ -60,5 +71,14 @@ def save_community_to_file(filename: str, community: Community):
 def read_community_from_file(filename: str):
     with open(f"{filename}.pickle", "rb") as f:
         community_compressed = pickle.load(f)
+    community = community_unpack(community_compressed)
+    return community
+
+
+def read_community_from_combined_file(filename: str, community_number: int):
+    if not filename.endswith(".pickle"):
+        filename += ".pickle"
+    with open(f"{filename}", "rb") as f:
+        community_compressed = pickle.load(f)[community_number]
     community = community_unpack(community_compressed)
     return community

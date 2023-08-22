@@ -5,7 +5,7 @@ import shutil
 import time
 
 from community import Community
-from scripts.save_read_community import save_community_to_file
+from scripts.save_read_community import combine_community_files, save_community_to_file
 
 
 class Simulation:
@@ -57,6 +57,9 @@ class Simulation:
             community=community,
         )
         self.simulate_and_write_data_line(community=community, number=number)
+        combine_community_files(
+            self.folder_communities, f"{self.folder_communities}/communities.pickle"
+        )
         self.report_progress(number)
 
     def initialize_dirs(self):
