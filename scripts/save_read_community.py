@@ -1,5 +1,6 @@
 import os
 import pickle
+import shutil
 
 from community import Community
 
@@ -24,7 +25,7 @@ def community_compress(community: Community):
     return community_dict
 
 
-def combine_community_files(directory_path, output_file):
+def combine_community_files(directory_path, output_file, delete_directory=False):
     result = []
     for d in os.listdir(directory_path):
         if d.endswith(".pickle"):
@@ -33,6 +34,8 @@ def combine_community_files(directory_path, output_file):
             result.append(content)
     with open(output_file, "wb") as out:
         pickle.dump(result, out)
+    if delete_directory:
+        shutil.rmtree(directory_path)
 
 
 def community_unpack(community_compressed: dict):
