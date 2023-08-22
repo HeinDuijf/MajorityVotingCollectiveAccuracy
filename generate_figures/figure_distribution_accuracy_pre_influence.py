@@ -24,7 +24,7 @@ def figure_distribution_accuracy_pre_influence(
         filename=filename,
         dataframe=df,
         y="collective_accuracy_pre_influence",
-        title="Distribution of collective accuracy",
+        title="Distribution of collective accuracy prior to influence",
         ylabel_left="number of occurrences",
         xlabel="collective accuracy",
         xlim=(0, 1),
@@ -35,4 +35,4 @@ def figure_distribution_accuracy_pre_influence(
 
 
 if __name__ == "__main__":
-    figure_distribution_accuracy(data_file="../data/test.csv")
+    figure_distribution_accuracy_pre_influence(data_file="../data/test.csv")
