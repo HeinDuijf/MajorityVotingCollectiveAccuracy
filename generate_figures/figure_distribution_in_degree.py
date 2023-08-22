@@ -3,12 +3,14 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from scripts.save_read_community import read_community_from_file
+from scripts.save_read_community import read_community_from_combined_file
 
 cm = 1 / 2.54  # variable used to convert inches to cm
 
 
-def figure_distribution_in_degree(filename: str = None, collect: bool = True):
+def figure_distribution_in_degree(
+    filename: str = None, communities_file: str = None, collect: bool = True
+):
     """Generates a plot of the in-degree distribution to verify that the generated
     communities are scale-free.
 
@@ -18,6 +20,10 @@ def figure_distribution_in_degree(filename: str = None, collect: bool = True):
 
     Parameters
     ----------
+    filename: str
+        The filename of the plot
+    communities_file: str
+        The (pickle) file containing all communities
     collect: bool
         Boolean condition on whether the algorithm collects the in-degrees. This
         condition was included for the practical reason that collecting the in-degrees
@@ -34,12 +40,13 @@ def figure_distribution_in_degree(filename: str = None, collect: bool = True):
     root_dir = (
         os.path.dirname(__file__).replace("\\", "/").removesuffix("generate_figures")
     )
+    directory = os.path.dirname(communities_file)
 
     # 1. Collect data about the in-degrees in the generated communities
     if collect:
         for community_number in range(number_of_communities):
-            community = read_community_from_file(
-                f"{root_dir}/data/communities/communities/{community_number}"
+            community = read_community_from_combined_file(
+                f"{communities_file}", community_number=community_number
             )
             for node in community.nodes:
                 node_in_degree = community.network.in_degree(node)
@@ -51,11 +58,11 @@ def figure_distribution_in_degree(filename: str = None, collect: bool = True):
         data["frequency"] = data["frequency"] / (
             number_of_communities * number_of_nodes
         )
-        data.to_csv(f"{root_dir}/data/communities/distribution_in_degrees.csv")
+        data.to_csv(f"{directory}/distribution_in_degrees.csv")
 
     # 2. Plot the in-degree distribution on log-log scale
     if not collect:
-        data = pd.read_csv(f"{root_dir}/data/communities/distribution_in_degrees.csv")
+        data = pd.read_csv(f"{directory}/distribution_in_degrees.csv")
     data.plot.scatter(
         x="degree",
         y="frequency",
@@ -78,5 +85,7 @@ def figure_distribution_in_degree(filename: str = None, collect: bool = True):
 
 if __name__ == "__main__":
     figure_distribution_in_degree(
-        collect=True, filename="new_figures/figure_distribution_in_degrees"
+        collect=True,
+        filename="new_figures/figure_distribution_in_degrees",
+        communities_file="../data/communities/communities.pickle",
     )
