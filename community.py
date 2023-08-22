@@ -199,7 +199,7 @@ class Community:
             outcome = self.vote_and_opinion()
             vote_winners.append(outcome["vote_winner"])
             votes.append(outcome["vote"])
-            opinion_winners.append(["opinion_winner"])
+            opinion_winners.append(outcome["opinion_winner"])
             opinions.append(outcome["opinion"])
 
         result_vote_winners = self.calculate_accuracy_and_precision(
