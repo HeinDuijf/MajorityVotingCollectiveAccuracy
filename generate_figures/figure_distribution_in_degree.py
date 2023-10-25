@@ -86,6 +86,6 @@ def figure_distribution_in_degree(
 if __name__ == "__main__":
     figure_distribution_in_degree(
         collect=True,
-        filename="new_figures/figure_distribution_in_degrees",
-        communities_file="../data/communities/communities.pickle",
+        filename="../new_figures/figure_distribution_in_degrees",
+        communities_file="../data/communities.pickle",
     )
