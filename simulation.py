@@ -5,6 +5,7 @@ import shutil
 import time
 
 from community import Community
+from scripts.basic_functions import calculate_accuracy_and_precision
 from scripts.save_read_community import combine_community_files, save_community_to_file
 
 
@@ -124,10 +125,10 @@ class Simulation:
             + "number_of_minority,"
             + "influence_minority_proportion,"
             + "homophily,"
-            + "collective_accuracy,"
-            + "collective_accuracy_precision,"
-            + "collective_accuracy_pre_influence,"
-            + "collective_accuracy_precision_pre_influence,"
+            + "accuracy,"
+            + "accuracy_precision,"
+            + "accuracy_pre_influence,"
+            + "accuracy_precision_pre_influence,"
             + "mean,"
             + "median,"
             + "std,"
