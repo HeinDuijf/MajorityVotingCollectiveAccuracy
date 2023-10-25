@@ -1,15 +1,23 @@
 import pandas as pd
 import statsmodels.api as sm
 from scipy import stats
-from scripts.basic_functions import convert_math_to_text
+from scripts.basic_functions import convert_math_to_text, convert_text_list_to_math_list
 
 
-def table_std_coefficients(data_file: str = "data/clean.csv", output_file: str = None):
+def table_std_coefficients(
+    data_file: str = "../data/clean.csv",
+    output_file: str = None,
+    independent_variables: list = None,
+    dependent_variable: str = None,
+):
     # Initialize
     df = pd.read_csv(data_file)
 
-    output = "collective_accuracy"
+    if dependent_variable is None:
+        dependent_variable = "accuracy"
     rows: list = ["p_e", "p_m", "E", "I_e"]
+    if independent_variables is not None:
+        rows: list = convert_text_list_to_math_list(independent_variables)
     table = pd.DataFrame(index=rows)
 
     # Setting variable range for subdata
@@ -32,7 +40,7 @@ def table_std_coefficients(data_file: str = "data/clean.csv", output_file: str =
         # Standardized coefficients
         variables = [convert_math_to_text(row) for row in rows]
         df_norm = pd.DataFrame(stats.zscore(df_sub))
-        Y_norm = df_norm[output]
+        Y_norm = df_norm[dependent_variable]
         X_norm = df_norm[variables]
         X_norm = sm.add_constant(X_norm)
         model_norm = sm.OLS(Y_norm, X_norm).fit()
@@ -43,8 +51,10 @@ def table_std_coefficients(data_file: str = "data/clean.csv", output_file: str =
     if not output_file:
         return table
     else:
-        table.to_csv(f"stats/{output_file}.csv")
+        table.to_csv(f"{output_file}.csv")
 
 
 if __name__ == "__main__":
-    table_std_coefficients(output_file="test_std_coeff")
+    table_std_coefficients(
+        data_file="../data/clean.csv", output_file="../stats/test_std_coeff"
+    )
