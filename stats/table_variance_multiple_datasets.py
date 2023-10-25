@@ -1,24 +1,26 @@
 import pandas as pd
 import statsmodels.api as sm
-from scripts.basic_functions import convert_math_to_text
+from scripts.basic_functions import convert_list_to_rows, convert_math_to_text
 
 
 def table_variance_multiple_datasets(
-    data_file: str = "data/clean.csv", output_file: str = None
+    data_file: str = ".../data/clean.csv",
+    output_file: str = None,
+    dependent_variable: str = "accuracy",
+    independent_variables: list = None,
 ):
     # Initialize
     df = pd.read_csv(data_file)
 
-    output = "collective_accuracy"
-    rows: list = [
-        "p_e + p_m",
-        "E",
-        "I_e",
-        "E + I_e",
-        "p_e + p_m + E",
-        "p_e + p_m + I_e",
-        "p_e + p_m + E + I_e",
-    ]
+    if independent_variables is None:
+        independent_variables = [
+            "number_of_minority",
+            "homophily",
+            "influence_minority_proportion",
+            "minority_competence",
+            "majority_competence",
+        ]
+    rows: list = convert_list_to_rows(independent_variables)
     table = pd.DataFrame(index=rows)
 
     # Setting variable range for subdata
@@ -38,8 +40,8 @@ def table_variance_multiple_datasets(
             & (df["majority_competence"] < max(competence_range))
         ]
         for row in rows:
-            variables = convert_math_to_text(row)
-            Y = df_sub[output]
+            variables = convert_math_to_text(row, "list")
+            Y = df_sub[dependent_variable]
             X = df_sub[variables]
             X = sm.add_constant(X)
             model = sm.OLS(Y, X).fit()
@@ -48,8 +50,12 @@ def table_variance_multiple_datasets(
     if not output_file:
         return table
     else:
-        table.to_csv(f"stats/{output_file}.csv")
+        table.to_csv(f"{output_file}.csv")
 
 
 if __name__ == "__main__":
-    table_variance_multiple_datasets(output_file="test_table_multi")
+    table_variance_multiple_datasets(
+        data_file="../data/clean.csv",
+        output_file="../stats/table_multi",
+        # dependent_variable="mean",
+    )
