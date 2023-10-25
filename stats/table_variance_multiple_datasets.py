@@ -13,14 +13,17 @@ def table_variance_multiple_datasets(
     df = pd.read_csv(data_file)
 
     if independent_variables is None:
-        independent_variables = [
-            "number_of_minority",
-            "homophily",
-            "influence_minority_proportion",
-            "minority_competence",
-            "majority_competence",
+        rows: list = [
+            "p_e + p_m",
+            "E",
+            "I_e",
+            "E + I_e",
+            "p_e + p_m + E",
+            "p_e + p_m + I_e",
+            "p_e + p_m + E + I_e",
         ]
-    rows: list = convert_list_to_rows(independent_variables)
+    else:
+        rows: list = convert_list_to_rows(independent_variables)
     table = pd.DataFrame(index=rows)
 
     # Setting variable range for subdata
