@@ -3,11 +3,11 @@ import statsmodels.api as sm
 from scripts.basic_functions import convert_math_to_text
 
 
-def table_variance(data_file: str = "data/clean.csv", output_file: str = None):
+def table_variance(data_file: str = "../data/clean.csv", output_file: str = None):
     # Initialize
     df = pd.read_csv(data_file)
 
-    output = "collective_accuracy"
+    output = "accuracy"
     rows: list = [
         "p_e + p_m",
         "E",
@@ -22,7 +22,7 @@ def table_variance(data_file: str = "data/clean.csv", output_file: str = None):
     # Analysis
     for row in rows:
         # construct multiple linear regression model
-        variables = convert_math_to_text(row)
+        variables = convert_math_to_text(row, "list")
         Y = df[output]
         X = df[variables]
         X = sm.add_constant(X)
@@ -31,8 +31,10 @@ def table_variance(data_file: str = "data/clean.csv", output_file: str = None):
     if not output_file:
         return table
     else:
-        table.to_csv(f"stats/{output_file}.csv")
+        table.to_csv(f"{output_file}.csv")
 
 
 if __name__ == "__main__":
-    table_variance(output_file="test_table")
+    table_variance(
+        data_file="../data/clean.csv", output_file="../stats/test_table_variance"
+    )
