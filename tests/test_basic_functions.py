@@ -39,28 +39,11 @@ def test_convert_math_to_text():
     assert convert_math_to_text("E") == "number_of_minority"
     assert convert_math_to_text("I_e") == "influence_minority_proportion"
     assert convert_math_to_text("h") == "homophily"
-    assert convert_math_to_text("p_e + p_m") == [
+    assert convert_math_to_text("p_e + p_m", "list") == [
         "minority_competence",
         "majority_competence",
     ]
-    assert convert_math_to_text("p_e + p_m + E") == [
-        "minority_competence",
-        "majority_competence",
-        "number_of_minority",
-    ]
-
-
-def test_convert_math_to_list():
-    assert convert_math_to_list("p_e") == ["minority_competence"]
-    assert convert_math_to_list("p_m") == ["majority_competence"]
-    assert convert_math_to_list("E") == ["number_of_minority"]
-    assert convert_math_to_list("I_e") == ["influence_minority_proportion"]
-    assert convert_math_to_list("h") == ["homophily"]
-    assert convert_math_to_list("p_e + p_m") == [
-        "minority_competence",
-        "majority_competence",
-    ]
-    assert convert_math_to_list("p_e + p_m + E") == [
+    assert convert_math_to_text("p_e + p_m + E", "list") == [
         "minority_competence",
         "majority_competence",
         "number_of_minority",
