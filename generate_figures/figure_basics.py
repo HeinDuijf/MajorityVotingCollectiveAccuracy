@@ -88,3 +88,42 @@ def line_plot(
         plt.savefig(fname=filename, dpi="figure")
     else:
         plt.show()
+
+
+def cumulative_line_plot(
+    dataframe: pd.DataFrame,
+    x: str,
+    y1: str,
+    y2: str,
+    hue: str,
+    title: str,
+    xlabel: str,
+    ylabel: str,
+    xlim=(0.5, 1),
+    ylim=(0.5, 0.85),
+    filename: str = None,
+):
+    # Initialize style parameters
+    plt.rc("font", **font_style)
+    colormap = sns.color_palette("crest", as_cmap=True)
+
+    # Cumulative line plot
+    y1_values, x_values = np.histogram(dataframe[y1], bins=30, range=xlim)
+    y1_values = np.cumsum(y1_values)
+    y1_values = 1 / np.max(y1_values) * y1_values
+    x_values = x_values[:-1]
+
+    # Plot line
+    fig, ax = plt.subplots(nrows=1, ncols=1, figsize=line_plot_size)
+    sns.lineplot(
+        data=dataframe, x=x, y=1, hue=hue, palette=colormap, legend="full",
+    )
+    ax.set(
+        ylabel=ylabel, xlabel=xlabel, xlim=xlim, ylim=ylim, title=title,
+    )
+
+    # Show or save
+    if filename:
+        plt.savefig(fname=filename, dpi="figure")
+    else:
+        plt.show()
