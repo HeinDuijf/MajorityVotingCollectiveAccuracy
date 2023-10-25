@@ -13,7 +13,7 @@ def figure_accuracy_homophilic(
     number_of_communities: int = 200,
     number_of_voting_simulations: int = 100,
 ):
-    """Plots the collective accuracy in communities of a certain type for various
+    """Plots the majoritarian accuracy in communities of a certain type for various
     competences and degrees of homophily.
 
     Parameters
@@ -29,11 +29,11 @@ def figure_accuracy_homophilic(
     number_of_communities: int
         Number of communities used for each data point
     number_of_voting_simulations: int
-        Number of steps used to estimate collective accuracy in each network
+        Number of steps used to estimate majoritarian accuracy in each network
 
     Returns
     ----------
-    Plot of collective accuracy for various competences and degrees of homophily"""
+    Plot of majoritarian accuracy for various competences and degrees of homophily"""
     # Initialize variables
     homophily_values = 0.1 * np.arange(0, 6, 1, dtype=int) + 0.5
     competence_values = 0.05 * np.arange(0, 4, 1, dtype=int) + 0.55
@@ -64,12 +64,12 @@ def figure_accuracy_homophilic(
         print(f"Progress figure_accuracy_homophilic: {progress}%")
 
     # 3. Plot
-    ylabel = "collective accuracy"
+    ylabel = "majoritarian accuracy"
     xlabel = "homophily value"
     xlim = (0.5, 1)
     ylim = (0.5, 0.85)
     title = (
-        f"Collective accuracy in scale-free communities \nwith homophilic "
+        f"Majoritarian accuracy in scale-free communities \nwith homophilic "
         f"influence and {number_of_elites}% minority"
     )
     line_plot(
