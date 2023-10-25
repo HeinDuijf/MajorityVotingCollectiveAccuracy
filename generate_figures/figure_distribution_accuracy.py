@@ -7,14 +7,14 @@ from generate_figures.figure_basics import histogram_plot
 def figure_distribution_accuracy(
     filename: str = None, data_file: str = "data/clean.csv"
 ):
-    """Plots the distribution of the collective accuracy and the cumulative line plot.
+    """Plots the distribution of the majoritarian accuracy and the cumulative line plot.
 
     Parameters
     ----------
 
     Returns
     -------
-        Plot of the distribution of the collective accuracy and the cumulative
+        Plot of the distribution of the majoritarian accuracy and the cumulative
         line plot."""
     df = pd.read_csv(data_file)
 
@@ -22,10 +22,10 @@ def figure_distribution_accuracy(
     histogram_plot(
         filename=filename,
         dataframe=df,
-        y="collective_accuracy",
-        title="Distribution of collective accuracy",
+        y="accuracy",
+        title="Distribution of majoritarian accuracy",
         ylabel_left="number of occurrences",
-        xlabel="collective accuracy",
+        xlabel="majoritarian accuracy",
         xlim=(0, 1),
         xticks=0.1 * np.arange(0, 11, 1, dtype=int),
         ylabel_right="cumulative probability",
@@ -34,4 +34,7 @@ def figure_distribution_accuracy(
 
 
 if __name__ == "__main__":
-    figure_distribution_accuracy()
+    figure_distribution_accuracy(
+        data_file="../data/clean.csv",
+        filename="../new_figures/figure_distribution_accuracy.png",
+    )
