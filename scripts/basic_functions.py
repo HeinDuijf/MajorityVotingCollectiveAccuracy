@@ -1,6 +1,8 @@
 import random as rd
 from itertools import combinations
 
+from statsmodels.stats.proportion import proportion_confint
+
 import scripts.config as cfg
 
 convert_to_text_dict: dict = {
@@ -12,6 +14,7 @@ convert_to_text_dict: dict = {
     "mu": "mean",
     "m": "median",
     "s": "std",
+    "v": "vote",
 }
 
 convert_to_math_dict: dict = {value: key for key, value in convert_to_text_dict.items()}
@@ -32,20 +35,47 @@ def majority_winner(values: list):
         return rd.choice([cfg.vote_for_mass, cfg.vote_for_elites])
 
 
-def convert_math_to_text(string: str):
-    """ Converts math to text.
-    For example, "p_e" is converted to "minority_competence"."""
-    words = string.replace("+", " ").split(" ")
-    words = [word for word in words if word != ""]
-    if len(words) == 1:
-        return convert_to_text_dict[words[0]]
-    return [convert_to_text_dict[word] for word in words]
+def calculate_accuracy_and_precision(list_of_items, alpha: float = 0.05):
+    number_of_items = len(list_of_items)
+    number_of_success = len(
+        [outcome for outcome in list_of_items if outcome == cfg.vote_for_mass]
+    )
+    estimated_accuracy = number_of_success / number_of_items
+    confidence_interval = proportion_confint(
+        number_of_success, number_of_items, alpha=alpha
+    )
+    result = {
+        "accuracy": estimated_accuracy,
+        "precision": max(confidence_interval) - min(confidence_interval),
+    }
+    return result
 
 
-def convert_math_to_list(string: str):
-    result = convert_math_to_text(string)
-    if type(result) != list:
-        result = [result]
+def convert_math_to_text(math_str: str, output_type: str = "str"):
+    """ Converts math to text. For example, used to convert "p_e" to
+    "minority_competence" and to convert "E + h" to ["number_of_minority","homophily"].
+    :param math_str: str
+        The string containing math symbols
+    :param output_type: str
+        Determines the type of the output, either "str" or "list"
+    :returns result
+        Returns either a string or a list."""
+    if output_type == "str":
+        result = convert_to_text_dict[math_str]
+        return result
+    if output_type == "list":
+        words = math_str.replace("+", " ").split(" ")
+        words = [word for word in words if word != ""]
+        result = [
+            convert_to_text_dict[word]
+            for word in words
+            if word in convert_to_text_dict.keys()
+        ]
+        return result
+
+
+def convert_text_list_to_math_list(text_list: list):
+    result = [convert_to_math_dict[string] for string in text_list]
     return result
 
 
