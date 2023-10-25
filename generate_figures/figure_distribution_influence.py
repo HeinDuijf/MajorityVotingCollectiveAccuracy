@@ -5,9 +5,10 @@ from generate_figures.figure_basics import histogram_plot
 
 
 def figure_distribution_influence(
-    filename: str = None, data_file: str = "data/clean.csv"
+    filename: str = None, data_file: str = "../data/clean.csv"
 ):
-    """Plots the distribution of the proportional influence of the minority and the cumulative lineplot.
+    """Plots the distribution of the proportional influence of the minority and the
+    cumulative lineplot.
 
     Parameters
     ----------
@@ -35,4 +36,7 @@ def figure_distribution_influence(
 
 
 if __name__ == "__main__":
-    figure_distribution_influence()
+    figure_distribution_influence(
+        data_file="../data/clean.csv",
+        filename="../new_figures/figure_distribution_influence.png",
+    )
