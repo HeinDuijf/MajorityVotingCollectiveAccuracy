@@ -14,11 +14,11 @@ if __name__ == "__main__":
     data_file = "data/clean.csv"
     os.makedirs(folder_name, exist_ok=True)
 
-    # figure_accuracy_homophilic(
-    #     filename=f"{folder_name}/figure_accuracy_homophilic",
-    #     number_of_communities=200,
-    #     number_of_voting_simulations=200,
-    # )
+    figure_accuracy_homophilic(
+        filename=f"{folder_name}/figure_accuracy_homophilic",
+        number_of_communities=200,
+        number_of_voting_simulations=200,
+    )
     figure_distribution_accuracy_pre_influence(
         filename=f"{folder_name}/figure_distribution_accuracy_pre_influence",
         data_file=data_file,
