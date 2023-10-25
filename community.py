@@ -2,10 +2,9 @@ import random as rd
 
 import networkx as nx
 import numpy as np
-from statsmodels.stats.proportion import proportion_confint
 
 from scripts import config as cfg
-from scripts.basic_functions import majority_winner
+from scripts.basic_functions import calculate_accuracy_and_precision, majority_winner
 
 
 class Community:
@@ -175,21 +174,28 @@ class Community:
     def total_influence_mass(self):
         return len(self.network.edges()) - self.total_influence_elites()
 
-    def voting_simulation(self, number_of_voting_simulations: int, alpha: float = 0.05):
+    def voting_simulation(
+        self, number_of_voting_simulations: int, alpha: float = 0.05, return_all=False
+    ):
         """ Method for voting simulation.
         :param number_of_voting_simulations
-            Number of simulations to estimate the collective accuracy
+            Number of simulations to estimate the majoritarian accuracy
         :param alpha:
             p-value for confidence interval.
         :returns result: dict
-            result["accuracy_vote"]: estimated collective accuracy,
+            result["accuracy_vote"]: estimated majoritarian accuracy,
             result["precision_vote"]: the confidence interval associated with p-value
             alpha
-            result["mean"
-            result["accuracy_pre_influence"]: estimated collective accuracy
+            result["accuracy_pre_influence"]: estimated majoritarian accuracy
             pre influence,
             result["precision_pre_influence"]: the confidence interval associated with
             pre influence
+            result["mean"]: the mean,
+            result["median"]: the median,
+            result["std"]: the standard deviation,
+            result["mean_pre_influence"]: the mean pre influence,
+            result["median_pre_influence"]: the median pre influence,
+            result["std_pre_influence"]: the standard deviation pre influence,
         """
         vote_winners = []
         votes = []
@@ -202,10 +208,12 @@ class Community:
             opinion_winners.append(outcome["opinion_winner"])
             opinions.append(outcome["opinion"])
 
-        result_vote_winners = self.calculate_accuracy_and_precision(
+        if return_all:
+            return list(zip(votes, opinions))
+        result_vote_winners = calculate_accuracy_and_precision(
             vote_winners, alpha=alpha
         )
-        result_opinion_winners = self.calculate_accuracy_and_precision(
+        result_opinion_winners = calculate_accuracy_and_precision(
             opinion_winners, alpha=alpha
         )
         mean = np.mean(votes)
@@ -226,22 +234,6 @@ class Community:
             "mean_pre_influence": mean_pre_influence,
             "median_pre_influence": median_pre_influence,
             "std_pre_influence": std_pre_influence,
-        }
-        return result
-
-    @staticmethod
-    def calculate_accuracy_and_precision(list_of_items, alpha: float = 0.05):
-        number_of_items = len(list_of_items)
-        number_of_success = len(
-            [outcome for outcome in list_of_items if outcome == cfg.vote_for_mass]
-        )
-        estimated_accuracy = number_of_success / number_of_items
-        confidence_interval = proportion_confint(
-            number_of_success, number_of_items, alpha=alpha
-        )
-        result = {
-            "accuracy": estimated_accuracy,
-            "precision": max(confidence_interval) - min(confidence_interval),
         }
         return result
 
