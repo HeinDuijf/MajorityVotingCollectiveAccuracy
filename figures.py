@@ -1,6 +1,7 @@
 import os
 
 from generate_figures.figure_accuracy_homophily import figure_accuracy_homophilic
+from generate_figures.figure_cumulative_prior_post import figure_cumulative_prior_post
 from generate_figures.figure_distribution_accuracy import figure_distribution_accuracy
 from generate_figures.figure_distribution_accuracy_pre_influence import (
     figure_distribution_accuracy_pre_influence,
@@ -34,6 +35,12 @@ if __name__ == "__main__":
         filename=f"{folder_name}/figure_epistemic_accuracy", scale=4
     )
 
+    figure_cumulative_prior_post(
+        filename=f"{folder_name}/figure_cumulative_prior_post", data_file=data_file,
+    )
+
     figure_distribution_in_degree(
-        filename=f"{folder_name}/figure_distribution_in_degrees", collect=False
+        filename=f"{folder_name}/figure_distribution_in_degrees",
+        communities_file="data/communities.pickle",
+        collect=False,
     )
