@@ -1,11 +1,15 @@
 import os
+import pickle
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from scripts.save_read_community import read_community_from_combined_file
+from scripts.save_read_community import (
+    community_unpack,
+    read_community_from_combined_file,
+)
 
-cm = 1 / 2.54  # variable used to convert inches to cm
+from generate_figures.figure_basics import line_plot_size
 
 
 def figure_distribution_in_degree(
@@ -34,27 +38,30 @@ def figure_distribution_in_degree(
         Plot of in-degree distribution """
     number_of_nodes: int = 100
     number_of_communities: int = 10 ** 5
-    data = pd.DataFrame(columns=["degree", "frequency"])
-    data["degree"] = np.arange(0, number_of_nodes + 1, 1, dtype=int)
-    data["frequency"]: int = 0
+
     root_dir = (
         os.path.dirname(__file__).replace("\\", "/").removesuffix("generate_figures")
     )
     directory = os.path.dirname(communities_file)
+    data = pd.DataFrame(columns=["degree", "frequency"])
+    data["degree"] = np.arange(0, number_of_nodes + 1, 1, dtype=int)
+    data["frequency"]: int = 0
 
     # 1. Collect data about the in-degrees in the generated communities
     if collect:
-        for community_number in range(number_of_communities):
-            community = read_community_from_combined_file(
-                f"{communities_file}", community_number=community_number
-            )
-            for node in community.nodes:
-                node_in_degree = community.network.in_degree(node)
-                old_frequency = data.at[node_in_degree, "frequency"]
-                data.at[node_in_degree, "frequency"] = old_frequency + 1
-            print(
-                f"Collected community {community_number} out of {number_of_communities}"
-            )
+        if not communities_file.endswith(".pickle"):
+            communities_file += ".pickle"
+        with open(f"{communities_file}", "rb") as f:
+            community_combined_file = pickle.load(f)
+            for community_number in range(number_of_communities):
+                community = community_unpack(community_combined_file[community_number])
+                for node in community.nodes:
+                    node_in_degree = community.network.in_degree(node)
+                    old_frequency = data.at[node_in_degree, "frequency"]
+                    data.at[node_in_degree, "frequency"] = old_frequency + 1
+                print(
+                    f"Collected community {community_number} out of {number_of_communities}"
+                )
         data["frequency"] = data["frequency"] / (
             number_of_communities * number_of_nodes
         )
@@ -73,7 +80,7 @@ def figure_distribution_in_degree(
         title="In-degree distribution",
         ylabel="frequency",
         xlabel="in-degree",
-        figsize=(14 * cm, 11 * cm),
+        figsize=line_plot_size,
         c="black",
     )
     if filename:
