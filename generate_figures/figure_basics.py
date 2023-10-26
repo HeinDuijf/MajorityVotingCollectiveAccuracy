@@ -8,6 +8,10 @@ font_style: dict = {"family": "Calibri", "size": 11}
 cm = 1 / 2.54  # variable used to convert inches to cm
 histogram_size = (14 * cm, 10 * cm)
 line_plot_size = (14 * cm, 10.5 * cm)
+plt.rc("font", **font_style)
+colormap = sns.color_palette("rocket_r", as_cmap=True)  # Greys_d, crest,
+palette = sns.color_palette("pink")
+sns.set_style("whitegrid")
 
 
 def histogram_plot(
@@ -22,35 +26,39 @@ def histogram_plot(
     ylim=(0, 1),
     filename: str = None,
 ):
-    # Initialize style parameters
-    plt.rc("font", **font_style)
-
+    sns.set_style("white")
     # Plot histogram
     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=histogram_size)
-    ax.hist(
-        dataframe[y], bins=30, color="white", edgecolor="gray",
+
+    sns.histplot(
+        dataframe[y],
+        element="bars",
+        color="silver",
+        bins=40,
+        cumulative=False,
+        stat="count",
+        common_norm=False,
+        ax=ax,
     )
+
+    # Plot cumulative
+    sns.set_style("whitegrid")
     ax_cumulative = ax.twinx()
+    sns.histplot(
+        dataframe[y],
+        element="poly",
+        color="dimgray",
+        cumulative=True,
+        stat="percent",
+        common_norm=False,
+        ax=ax_cumulative,
+    )
+
     ax.set(
         title=title, ylabel=ylabel_left, xlabel=xlabel, xlim=xlim, xticks=xticks,
     )
-    ax.yaxis.label.set_color("gray")
-    ax.tick_params(axis="y", colors="gray")
-
-    # Cumulative line plot
-    y_values, x_values = np.histogram(dataframe[y], bins=30, range=xlim)
-    y_values = np.cumsum(y_values)
-    y_values = 1 / np.max(y_values) * y_values
-    x_values = x_values[:-1]
-    ax_cumulative.plot(x_values, y_values, color="black")
-    ax_cumulative.set(ylabel=ylabel_right, ylim=ylim)
-
-    # Mean and standard deviation
-    data_mean = dataframe[y].mean()
-    data_std = dataframe[y].std()
-    plt.axvline(data_mean, color="black", linestyle="dashed")
-    plt.axvline(data_mean + data_std, color="black", linestyle="dotted")
-    plt.axvline(data_mean - data_std, color="black", linestyle="dotted")
+    # ax.yaxis.label.set_color("gray")
+    # ax.tick_params(axis="y", colors="gray")
 
     if filename:
         plt.savefig(fname=filename, dpi="figure")
@@ -70,10 +78,6 @@ def line_plot(
     ylim=(0.5, 0.85),
     filename: str = None,
 ):
-    # Initialize style parameters
-    plt.rc("font", **font_style)
-    colormap = sns.color_palette("crest", as_cmap=True)
-
     # Plot line
     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=line_plot_size)
     sns.lineplot(
@@ -91,39 +95,40 @@ def line_plot(
 
 
 def cumulative_line_plot(
-    dataframe: pd.DataFrame,
-    x: str,
-    y1: str,
-    y2: str,
-    hue: str,
-    title: str,
-    xlabel: str,
-    ylabel: str,
-    xlim=(0.5, 1),
-    ylim=(0.5, 0.85),
-    filename: str = None,
+    dataframe: pd.DataFrame, filename: str = None,
 ):
-    # Initialize style parameters
-    plt.rc("font", **font_style)
-    colormap = sns.color_palette("crest", as_cmap=True)
+    df = dataframe.melt()
+    df = df[
+        (df["variable"] == "accuracy") | (df["variable"] == "accuracy_pre_influence")
+    ]
+    df.columns = ["Type", "Accuracy"]
+    df.replace("accuracy_pre_influence", "prior", inplace=True)
+    df.replace("accuracy", "posterior", inplace=True)
 
-    # Cumulative line plot
-    y1_values, x_values = np.histogram(dataframe[y1], bins=30, range=xlim)
-    y1_values = np.cumsum(y1_values)
-    y1_values = 1 / np.max(y1_values) * y1_values
-    x_values = x_values[:-1]
+    fig, ax = plt.subplots(figsize=histogram_size)
+    sns.histplot(
+        df,
+        x="Accuracy",
+        hue="Type",
+        element="poly",
+        cumulative=True,
+        stat="percent",
+        common_norm=False,
+        palette=palette,
+        ax=ax,
+    )
 
-    # Plot line
-    fig, ax = plt.subplots(nrows=1, ncols=1, figsize=line_plot_size)
-    sns.lineplot(
-        data=dataframe, x=x, y=1, hue=hue, palette=colormap, legend="full",
-    )
-    ax.set(
-        ylabel=ylabel, xlabel=xlabel, xlim=xlim, ylim=ylim, title=title,
-    )
+    xticks = 0.1 * np.arange(0, 11, 1, dtype=int)
+    yticks = 10 * np.arange(0, 11, 1, dtype=int)
+    ylim = (0, 100)
+    ax.set(ylim=ylim, yticks=yticks, xlim=(0, 1), xticks=xticks)
+    ax.legend(["prior", "posterior"], loc="upper left")
+    ax.set_title("Majoritarian accuracy: cumulative distributions", fontsize=16)
 
     # Show or save
     if filename:
-        plt.savefig(fname=filename, dpi="figure")
+        plt.savefig(
+            fname="new_figures/figure_cumulative_prior_and_posterior", dpi="figure"
+        )
     else:
         plt.show()
