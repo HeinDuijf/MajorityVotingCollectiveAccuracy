@@ -88,6 +88,7 @@ def figure_epistemic_accuracy(scale: int = 3, filename: str = None):
         xlabel="Group size",
         ylim=(0.5, 1.0),
         xlim=(0, 10 ** scale),
+        filename=filename,
     )
 
 
