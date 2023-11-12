@@ -117,7 +117,7 @@ class Community:
         # Multi-type preferential attachment
         edges_to_do = list(initial_network.edges()).copy()
         rd.shuffle(edges_to_do)
-        for (source, target) in edges_to_do:
+        for source, target in edges_to_do:
             # Define potential targets
             if target in self.nodes_elite:
                 nodes_of_target_type = self.nodes_elite
@@ -177,7 +177,7 @@ class Community:
     def voting_simulation(
         self, number_of_voting_simulations: int, alpha: float = 0.05, return_all=False
     ):
-        """ Method for voting simulation.
+        """Method for voting simulation.
         :param number_of_voting_simulations
             Number of simulations to estimate the majoritarian accuracy
         :param alpha:
