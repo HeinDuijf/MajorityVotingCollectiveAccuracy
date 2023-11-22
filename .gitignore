@@ -1,9 +1,11 @@
 __pycache__
 .idea
 .ipynb_checkpoints
+.pytest_cache
+.vscode
 archive
 data/communities
+data/test_communities
+data/test_competence
 lib
-tests/.pytest_cache
 venv
-.vscode
