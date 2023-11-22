@@ -2,10 +2,10 @@ import random as rd
 
 import matplotlib.pyplot as plt
 import networkx as nx
+from config import vote_for_negative, vote_for_positive
 from pyvis.network import Network
 
 from community import Community
-from config import vote_for_elites, vote_for_mass
 
 elite_color = "#FFC107"
 mass_color = "#9C27B0"
@@ -13,7 +13,7 @@ mass_color = "#9C27B0"
 
 def set_node_attributes(com: Community, color_type: str = "type"):
     def translate_to_color(symbol):
-        if symbol == vote_for_elites or symbol == "elite":
+        if symbol == vote_for_negative or symbol == "elite":
             return elite_color
         else:
             return mass_color

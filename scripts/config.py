@@ -1,2 +1,2 @@
-vote_for_mass: int = 1
-vote_for_elites: int = 0
+vote_for_positive: int = 1
+vote_for_negative: int = 0

@@ -21,24 +21,24 @@ convert_to_math_dict: dict = {value: key for key, value in convert_to_text_dict.
 
 
 def majority_winner(values: list):
-    """ Basic function to determine the majority winner in a binary decision context."""
+    """Basic function to determine the majority winner in a binary decision context."""
     number_votes_for_elites = len(
-        [value for value in values if value == cfg.vote_for_elites]
+        [value for value in values if value == cfg.vote_for_negative]
     )
     number_votes_for_mass = len(values) - number_votes_for_elites
     threshold = len(values) / 2
     if number_votes_for_elites > threshold:
-        return cfg.vote_for_elites
+        return cfg.vote_for_negative
     elif number_votes_for_mass > threshold:
-        return cfg.vote_for_mass
+        return cfg.vote_for_positive
     else:
-        return rd.choice([cfg.vote_for_mass, cfg.vote_for_elites])
+        return rd.choice([cfg.vote_for_positive, cfg.vote_for_negative])
 
 
 def calculate_accuracy_and_precision(list_of_items, alpha: float = 0.05):
     number_of_items = len(list_of_items)
     number_of_success = len(
-        [outcome for outcome in list_of_items if outcome == cfg.vote_for_mass]
+        [outcome for outcome in list_of_items if outcome == cfg.vote_for_positive]
     )
     estimated_accuracy = number_of_success / number_of_items
     confidence_interval = proportion_confint(
@@ -52,7 +52,7 @@ def calculate_accuracy_and_precision(list_of_items, alpha: float = 0.05):
 
 
 def convert_math_to_text(math_str: str, output_type: str = "str"):
-    """ Converts math to text. For example, used to convert "p_e" to
+    """Converts math to text. For example, used to convert "p_e" to
     "minority_competence" and to convert "E + h" to ["number_of_minority","homophily"].
     :param math_str: str
         The string containing math symbols
