@@ -1,15 +1,24 @@
 import networkx as nx
+
 from community import Community
 from scripts import config as cfg
 
-community_blank = Community(0, 0, 0, 0, 0, 0,)
+community_blank = Community(
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+)
 community_without_hom: Community = community_blank
 community_with_hom: Community = community_blank
 community_from_edges: Community = community_blank
-
+community_with_com: Community = community_blank
 
 params_without_hom: dict = {}
 params_with_hom: dict = {}
+params_with_com: dict = {}
 params_from_edges: dict = {}
 
 
@@ -17,9 +26,24 @@ def setup_module(module):
     global community_without_hom
     global community_with_hom
     global community_from_edges
+    global community_with_com
     global params_without_hom
     global params_with_hom
     global params_from_edges
+    global params_with_com
+
+    params_with_com = {
+        "number_of_nodes": 100,
+        "number_of_elites": 20,
+        "degree": 6,
+        "elite_competence": 0.8,
+        "mass_competence": 0.6,
+        "probability_preferential_attachment": 0.6,
+        "probability_competence_selection": 0.7,
+        "probability_homophilic_attachment": None,
+        "edges": None,
+    }
+    community_with_com = Community(**params_with_com)
 
     params_without_hom = {
         "number_of_nodes": 100,
@@ -95,6 +119,13 @@ def check_community(community: Community, params: dict):
     if params["edges"] is None:
         check_degree(community, params)
     check_competences(community, params)
+
+
+def test_create_initial_network_with_competence_selection():
+    global community_with_com
+    global params_with_com
+    check_number_of_nodes(community_with_com, params_with_com)
+    check_degree(community_with_com, params_with_com)
 
 
 def test_create_initial_network_without_homophilic_attachment():
@@ -207,7 +238,7 @@ def test_update_votes():
     for node in community_with_hom.nodes:
         node_vote = community_with_hom.network.nodes[node]["vote"]
         node_has_vote: bool = (
-            node_vote == cfg.vote_for_mass or node_vote == cfg.vote_for_elites
+            node_vote == cfg.vote_for_positive or node_vote == cfg.vote_for_negative
         )
         assert node_has_vote
 
@@ -218,7 +249,8 @@ def test_update_opinions():
     for node in community_with_hom.nodes:
         node_opinion = community_with_hom.network.nodes[node]["opinion"]
         node_has_opinion: bool = (
-            node_opinion == cfg.vote_for_mass or node_opinion == cfg.vote_for_elites
+            node_opinion == cfg.vote_for_positive
+            or node_opinion == cfg.vote_for_negative
         )
         assert node_has_opinion
 
