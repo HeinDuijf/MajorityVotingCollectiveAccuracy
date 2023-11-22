@@ -1,7 +1,6 @@
 from scripts import config as cfg
 from scripts.basic_functions import (
     convert_list_to_rows,
-    convert_math_to_list,
     convert_math_to_text,
     majority_winner,
 )
@@ -15,22 +14,22 @@ from scripts.basic_functions import (
 
 def test_majority_winner():
     values = [
-        cfg.vote_for_mass,
-        cfg.vote_for_elites,
-        cfg.vote_for_elites,
-        cfg.vote_for_mass,
-        cfg.vote_for_elites,
+        cfg.vote_for_positive,
+        cfg.vote_for_negative,
+        cfg.vote_for_negative,
+        cfg.vote_for_positive,
+        cfg.vote_for_negative,
     ]
-    assert majority_winner(values) == cfg.vote_for_elites
+    assert majority_winner(values) == cfg.vote_for_negative
 
     values = [
-        cfg.vote_for_mass,
-        cfg.vote_for_elites,
-        cfg.vote_for_elites,
-        cfg.vote_for_mass,
+        cfg.vote_for_positive,
+        cfg.vote_for_negative,
+        cfg.vote_for_negative,
+        cfg.vote_for_positive,
     ]
     result = majority_winner(values)
-    assert result == cfg.vote_for_elites or result == cfg.vote_for_mass
+    assert result == cfg.vote_for_negative or result == cfg.vote_for_positive
 
 
 def test_convert_math_to_text():
