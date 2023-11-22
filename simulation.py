@@ -22,7 +22,8 @@ class Simulation:
         elite_competence_range=(0.55, 0.7),
         mass_competence_range=(0.55, 0.7),
         number_of_elites_range=(25, 45),
-        probability_homophilic_attachment_range=(0.5, 0.75),
+        probability_homophilic_attachment_range=None,
+        probability_competence_selection_range=None,
     ):
         self.start_time = time.time()
         self.filename_csv = f"{filename_csv}.csv"
@@ -37,6 +38,9 @@ class Simulation:
         self.number_of_elites_range = number_of_elites_range
         self.probability_homophilic_attachment_range = (
             probability_homophilic_attachment_range
+        )
+        self.probability_competence_selection_range = (
+            probability_competence_selection_range
         )
 
     def run(self):
@@ -69,6 +73,7 @@ class Simulation:
         if os.path.exists(f"{self.folder_communities}"):
             shutil.rmtree(f"{self.folder_communities}")
         os.makedirs(f"{self.folder_communities}", exist_ok=True)
+        os.makedirs(f"{self.folder_communities}/communities", exist_ok=True)
         if os.path.exists(f"{self.filename_csv}"):
             os.remove(f"{self.filename_csv}")
 
@@ -96,11 +101,21 @@ class Simulation:
     def generate_community(self):
         elite_competence: float = rd.uniform(*self.elite_competence_range)
         mass_competence: float = rd.uniform(*self.mass_competence_range)
-        probability_homophilic_attachment = None
+
         if self.probability_homophilic_attachment_range is not None:
             probability_homophilic_attachment = rd.uniform(
                 *self.probability_homophilic_attachment_range
             )
+        else:
+            probability_homophilic_attachment = None
+
+        if self.probability_competence_selection_range is not None:
+            probability_competence_selection = rd.uniform(
+                *self.probability_competence_selection_range
+            )
+        else:
+            probability_competence_selection = None
+
         number_of_elites: int = rd.randint(*self.number_of_elites_range)
 
         # 1. Generate community with these parameters
@@ -114,6 +129,7 @@ class Simulation:
                 self.probability_preferential_attachment
             ),
             probability_homophilic_attachment=probability_homophilic_attachment,
+            probability_competence_selection=probability_competence_selection,
         )
         return community
 
@@ -125,6 +141,7 @@ class Simulation:
             + "number_of_minority,"
             + "influence_minority_proportion,"
             + "homophily,"
+            + "competence_selection,"
             + "accuracy,"
             + "accuracy_precision,"
             + "accuracy_pre_influence,"
@@ -163,7 +180,7 @@ class Simulation:
         data_line = (
             f"{number},{community.elite_competence},{community.mass_competence},"
             f"{community.number_of_elites},{influence_minority_proportion},"
-            f"{community.probability_homophilic_attachment},{accuracy},"
+            f"{community.probability_homophilic_attachment},{community.probability_competence_selection},{accuracy},"
             f"{accuracy_precision},{accuracy_pre_influence},"
             f"{accuracy_precision_pre_influence},{mean},{median},{std},"
             f"{mean_pre_influence},{median_pre_influence},{std_pre_influence}"
@@ -187,3 +204,17 @@ class Simulation:
                 f"Progress: {progress}%\n"
                 f"Estimated finish time: {estimated_finish_time_clock}"
             )
+
+
+if __name__ == "__main__":
+    Simulation(
+        folder_communities="data/test_competence",
+        filename_csv="data/test_competence",
+        number_of_communities=10**4,
+        number_of_voting_simulations=10**4,
+        number_of_nodes=10**2,
+        number_of_elites_range=(6, 20),
+        elite_competence_range=(0.6, 0.8),
+        mass_competence_range=(0.5, 0.6),
+        probability_competence_selection_range=(0.5, 0.9),
+    ).run()

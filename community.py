@@ -17,6 +17,7 @@ class Community:
         mass_competence: float = 0.6,
         probability_preferential_attachment: float = 0.6,
         probability_homophilic_attachment: float = None,
+        probability_competence_selection: float = None,
         edges: list = None,
     ):
         self.number_of_nodes: int = number_of_nodes
@@ -31,6 +32,7 @@ class Community:
         self.probability_homophilic_attachment: float = (
             probability_homophilic_attachment
         )
+        self.probability_competence_selection: float = probability_competence_selection
         self.edges: list = edges
 
         self.nodes: list = list(range(number_of_nodes))
@@ -50,13 +52,12 @@ class Community:
             return self.network
 
         # Create initial network.
-        if self.probability_homophilic_attachment is None:
-            # Create network without homophilic influence
-            initial_network = (
-                self.create_initial_network_without_homophilic_attachment()
-            )
-        else:
+        if self.probability_homophilic_attachment is not None:
             initial_network = self.create_initial_network_with_homophilic_attachment()
+        elif self.probability_competence_selection is not None:
+            initial_network = self.create_initial_network_with_competence_selection()
+        else:
+            initial_network = self.create_random_initial_network()
 
         # Preferential rewiring.
         self.network = self.rewire_network(initial_network)
@@ -69,7 +70,7 @@ class Community:
         network.add_edges_from(self.edges)
         return network
 
-    def create_initial_network_without_homophilic_attachment(self):
+    def create_random_initial_network(self):
         # Initialize network and nodes
         initial_network = nx.DiGraph()
         initial_network.add_nodes_from(self.nodes)
@@ -107,6 +108,27 @@ class Community:
             targets = targets_same_type + targets_diff_type
             edges_from_source = [(node, target) for target in targets]
             initial_network.add_edges_from(edges_from_source)
+        return initial_network
+
+    def create_initial_network_with_competence_selection(self):
+        initial_network = nx.DiGraph()
+        initial_network.add_nodes_from(self.nodes)
+
+        for node in self.nodes:
+            random_list = np.random.random_sample(self.degree)
+            number_targets_high_competence = len(
+                [x for x in random_list if x < self.probability_competence_selection]
+            )
+            number_targets_low_competence = self.degree - number_targets_high_competence
+            targets_high_competence = rd.sample(
+                self.nodes_elite, number_targets_high_competence
+            )
+            targets_low_competence = rd.sample(
+                self.nodes_mass, number_targets_low_competence
+            )
+            targets = targets_high_competence + targets_low_competence
+            edges_from_node = [(node, target) for target in targets]
+            initial_network.add_edges_from(edges_from_node)
         return initial_network
 
     def rewire_network(self, initial_network):
@@ -243,10 +265,10 @@ class Community:
         list_of_votes = [self.network.nodes[node]["vote"] for node in self.nodes]
         output: dict = {
             "vote_winner": majority_winner(list_of_votes),
-            "vote": sum([vote == cfg.vote_for_mass for vote in list_of_votes]),
+            "vote": sum([vote == cfg.vote_for_positive for vote in list_of_votes]),
             "opinion_winner": majority_winner(list_of_opinions),
             "opinion": sum(
-                [opinion == cfg.vote_for_mass for opinion in list_of_opinions]
+                [opinion == cfg.vote_for_positive for opinion in list_of_opinions]
             ),
         }
         return output
@@ -269,11 +291,17 @@ class Community:
     def update_opinions(self):
         for node_elite in self.nodes_elite:
             if rd.random() < self.elite_competence:
-                self.network.nodes[node_elite]["opinion"] = cfg.vote_for_elites
+                self.network.nodes[node_elite][
+                    "opinion"
+                ] = (
+                    cfg.vote_for_positive
+                )  # To do: reset to previous setting with interests
             else:
-                self.network.nodes[node_elite]["opinion"] = cfg.vote_for_mass
+                self.network.nodes[node_elite][
+                    "opinion"
+                ] = cfg.vote_for_negative  # Todo: idem
         for node_mass in self.nodes_mass:
             if rd.random() < self.mass_competence:
-                self.network.nodes[node_mass]["opinion"] = cfg.vote_for_mass
+                self.network.nodes[node_mass]["opinion"] = cfg.vote_for_positive
             else:
-                self.network.nodes[node_mass]["opinion"] = cfg.vote_for_elites
+                self.network.nodes[node_mass]["opinion"] = cfg.vote_for_negative
