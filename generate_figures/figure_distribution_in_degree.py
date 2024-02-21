@@ -4,12 +4,9 @@ import pickle
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from scripts.save_read_community import (
-    community_unpack,
-    read_community_from_combined_file,
-)
 
 from generate_figures.figure_basics import line_plot_size
+from scripts.save_read_community import community_unpack
 
 
 def figure_distribution_in_degree(
@@ -35,9 +32,9 @@ def figure_distribution_in_degree(
 
     Returns
     -------
-        Plot of in-degree distribution """
+        Plot of in-degree distribution"""
     number_of_nodes: int = 100
-    number_of_communities: int = 10 ** 5
+    number_of_communities: int = 10**5
 
     root_dir = (
         os.path.dirname(__file__).replace("\\", "/").removesuffix("generate_figures")
@@ -60,7 +57,8 @@ def figure_distribution_in_degree(
                     old_frequency = data.at[node_in_degree, "frequency"]
                     data.at[node_in_degree, "frequency"] = old_frequency + 1
                 print(
-                    f"Collected community {community_number} out of {number_of_communities}"
+                    f"Collected community {community_number} out of "
+                    f"{number_of_communities}"
                 )
         data["frequency"] = data["frequency"] / (
             number_of_communities * number_of_nodes
@@ -76,7 +74,7 @@ def figure_distribution_in_degree(
         loglog=True,
         legend=False,
         xlim=[1, 100],
-        ylim=[10 ** -4, 1],
+        ylim=[10**-4, 1],
         title="In-degree distribution",
         ylabel="frequency",
         xlabel="in-degree",

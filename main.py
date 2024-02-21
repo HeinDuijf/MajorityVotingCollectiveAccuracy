@@ -1,16 +1,16 @@
-import pickle
+# import pickle
 
-from scripts.save_read_community import (
-    community_unpack,
-    read_community_from_combined_file,
-)
+# from scripts.save_read_community import (
+#     community_unpack,
+#     read_community_from_combined_file,
+# )
 from simulation import Simulation
 
 if __name__ == "__main__":
     # Variables for the size of the simulation
-    number_of_communities = 10 ** 5
-    number_of_voting_simulations = 10 ** 5
-    number_of_nodes = 10 ** 2
+    number_of_communities = 10**5
+    number_of_voting_simulations = 10**5
+    number_of_nodes = 10**2
 
     # Simulation(
     #     filename_csv="data/clean",

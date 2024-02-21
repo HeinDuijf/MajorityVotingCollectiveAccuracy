@@ -11,10 +11,14 @@ convert_to_text_dict: dict = {
     "E": "number_of_minority",
     "I_e": "influence_minority_proportion",
     "h": "homophily",
+    "c": "competence_selection",
+    "dc": "delta_competence",
     "mu": "mean",
     "m": "median",
     "s": "std",
     "v": "vote",
+    "a": "accuracy",
+    "a-": "accuracy_pre_influence",
 }
 
 convert_to_math_dict: dict = {value: key for key, value in convert_to_text_dict.items()}

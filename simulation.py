@@ -92,7 +92,9 @@ class Simulation:
             f"mass_competence_range, {self.mass_competence_range}\n"
             f"number_of_elites_range, {self.number_of_elites_range}\n"
             f"probability_homophilic_attachment_range, "
-            f"{self.probability_homophilic_attachment_range}"
+            f"{self.probability_homophilic_attachment_range}\n"
+            f"probability_competence_selection_range, "
+            f"{self.probability_competence_selection_range}"
         )
         filename_readme = f"{self.folder_communities}/README.csv"
         with open(filename_readme, "w") as f:
@@ -180,7 +182,8 @@ class Simulation:
         data_line = (
             f"{number},{community.elite_competence},{community.mass_competence},"
             f"{community.number_of_elites},{influence_minority_proportion},"
-            f"{community.probability_homophilic_attachment},{community.probability_competence_selection},{accuracy},"
+            f"{community.probability_homophilic_attachment},"
+            f"{community.probability_competence_selection},{accuracy},"
             f"{accuracy_precision},{accuracy_pre_influence},"
             f"{accuracy_precision_pre_influence},{mean},{median},{std},"
             f"{mean_pre_influence},{median_pre_influence},{std_pre_influence}"
