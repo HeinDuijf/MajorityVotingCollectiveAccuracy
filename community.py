@@ -58,8 +58,9 @@ class Community:
         else:
             initial_network = self.create_initial_network_with_homophilic_attachment()
 
-        # Preferential rewiring.
-        self.network = self.rewire_network(initial_network)
+        # Preferential rewiring
+        if self.probability_preferential_attachment is not None:
+            self.network = self.rewire_network(initial_network)
         self.initialize_node_attributes()
         return self.network
 

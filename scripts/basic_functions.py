@@ -15,13 +15,14 @@ convert_to_text_dict: dict = {
     "m": "median",
     "s": "std",
     "v": "vote",
+    "PA": "PA",
 }
 
 convert_to_math_dict: dict = {value: key for key, value in convert_to_text_dict.items()}
 
 
 def majority_winner(values: list):
-    """ Basic function to determine the majority winner in a binary decision context."""
+    """Basic function to determine the majority winner in a binary decision context."""
     number_votes_for_elites = len(
         [value for value in values if value == cfg.vote_for_elites]
     )
@@ -52,7 +53,7 @@ def calculate_accuracy_and_precision(list_of_items, alpha: float = 0.05):
 
 
 def convert_math_to_text(math_str: str, output_type: str = "str"):
-    """ Converts math to text. For example, used to convert "p_e" to
+    """Converts math to text. For example, used to convert "p_e" to
     "minority_competence" and to convert "E + h" to ["number_of_minority","homophily"].
     :param math_str: str
         The string containing math symbols
